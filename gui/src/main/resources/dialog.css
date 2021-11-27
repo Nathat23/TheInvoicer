@@ -1,0 +1,9 @@
+#header-box {
+    -fx-background-color: #808080;
+    -fx-padding: 5;
+}
+
+#big-text {
+    -fx-font-size: 24pt;
+    -fx-text-fill: #FFFFFF;
+}
