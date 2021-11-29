@@ -1,9 +1,15 @@
 package com.invoicer.theinvoicer.gui;
 
-public interface DialogElement {
+public abstract class DialogElement implements AbstractElement {
 
-    int getColumnSpan();
+    private String name;
 
-    int getRowSpan();
+    public DialogElement(String name) {
+        this.name = name;
+    }
 
+    @Override
+    public String getName() {
+        return name;
+    }
 }

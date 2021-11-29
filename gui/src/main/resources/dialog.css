@@ -1,3 +1,9 @@
+#grid{
+    -fx-padding: 10;
+    -fx-hgap: 10;
+    -fx-vgap:10;
+}
+
 #header-box {
     -fx-background-color: #808080;
     -fx-padding: 5;

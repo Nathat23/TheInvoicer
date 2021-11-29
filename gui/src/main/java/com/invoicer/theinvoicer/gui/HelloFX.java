@@ -14,7 +14,9 @@ public class HelloFX extends Application {
         Dialog dialog = new Dialog("Hi", Dialog.DialogSize.SMALL) {
             @Override
             public void populate() {
-
+                addElement(new TextFieldElement("Woo"));
+                addElement(new LabelElement("Oh!"));
+                addElement(new TextFieldElement("Neat"));
             }
         };
         dialog.showDialog();
