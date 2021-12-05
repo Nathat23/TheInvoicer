@@ -1,31 +1,22 @@
 package com.invoicer.theinvoicer.gui;
 
 import javafx.scene.Node;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-public class TextFieldElement<T> extends StandardDialogElement implements EditableElement {
+public abstract class TextFieldElement extends StandardDialogElement implements EditableElement {
 
     private TextField textArea;
-    private Class<T> tClass;
 
-    public TextFieldElement(String name, Class<T>) {
+    public TextFieldElement(String name) {
         super(name);
     }
 
     @Override
-    public Node getContent() {
+    public TextField getContent() {
         if (textArea == null) {
             textArea = new TextField();
         }
         return textArea;
     }
 
-    @Override
-    public boolean validate() {
-        try {
-            Integer.valueOf()
-        } catch (NumberFormatException e)
-        return false;
-    }
 }

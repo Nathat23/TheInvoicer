@@ -4,4 +4,5 @@ public interface EditableElement {
 
     boolean validate();
 
+    Object getValue();
 }

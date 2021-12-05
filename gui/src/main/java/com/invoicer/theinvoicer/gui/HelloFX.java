@@ -1,6 +1,7 @@
 package com.invoicer.theinvoicer.gui;
 
 import javafx.application.Application;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class HelloFX extends Application {
@@ -14,9 +15,15 @@ public class HelloFX extends Application {
         Dialog dialog = new Dialog("Hi", Dialog.DialogSize.SMALL) {
             @Override
             public void populate() {
-                addElement(new TextFieldElement("Woo"));
-                addElement(new LabelElement("Oh!"));
-                addElement(new TextFieldElement("Neat"));
+                DialogPage page = new DialogPage("Beans");
+                page.addElement(new StringTextFieldElement("Ohh"));
+                page.addElement(new LabelElement("Oh!"));
+                page.addElement(new StringTextFieldElement("Neat"));
+                DialogPage page1 = new DialogPage("Boo");
+                page1.addElement(new StringTextFieldElement("Happy birthday"));
+                page1.addElement(new StringTextFieldElement("It is the day"));
+                addPage(page);
+                addPage(page1);
             }
         };
         dialog.showDialog();

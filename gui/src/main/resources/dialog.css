@@ -9,7 +9,25 @@
     -fx-padding: 5;
 }
 
+#button-box {
+    -fx-background-color: #EEEEEE;
+    -fx-padding: 20;
+    -fx-align: center;
+}
+
 #big-text {
     -fx-font-size: 24pt;
     -fx-text-fill: #FFFFFF;
+}
+
+#progress-vbar {
+    -fx-background-color: #bbbdbb;
+    -fx-max-width: 100;
+    -fx-min-width: 100;
+}
+
+#progress-grid {
+    -fx-padding: 10;
+    -fx-hgap: 10;
+    -fx-vgap: 5;
 }
