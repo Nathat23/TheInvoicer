@@ -70,7 +70,6 @@ public abstract class Dialog implements AbstractDialog {
         Button button = new Button("Next");
         button.setOnAction(actionEvent -> {
             nextPage();
-
         });
         hBox.getChildren().add(button);
         borderPane.bottomProperty().setValue(hBox);
@@ -110,7 +109,7 @@ public abstract class Dialog implements AbstractDialog {
         updateStatus();
     }
 
-    public void updateStatus() {
+    private void updateStatus() {
         GridPane gridPane = new GridPane();
         gridPane.setId("progress-grid");
         int i = 0;
@@ -120,12 +119,13 @@ public abstract class Dialog implements AbstractDialog {
             }
             Label label = new Label(page.getPageTitle());
             if (i == getCurrentPageId()) {
+                gridPane.add(new Label("\u2794"), 0, i);
                 label.setFont(Font.font(label.getFont().getFamily(), FontWeight.findByWeight(750), label.getFont().getSize()));
             }
             gridPane.add(label, 1, i);
             i++;
         }
-        gridPane.getColumnConstraints().add(new ColumnConstraints(10));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(15));
         if (progressBox.getChildren().isEmpty()) {
             progressBox.getChildren().add(gridPane);
             return;
