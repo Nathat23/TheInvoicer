@@ -2,8 +2,8 @@ package com.invoicer.theinvoicer.gui;
 
 public class StringTextFieldElement extends TextFieldElement {
 
-    public StringTextFieldElement(String name) {
-        super(name);
+    public StringTextFieldElement(String name, boolean passwordField) {
+        super(name, passwordField);
     }
 
     @Override

@@ -10,6 +10,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -25,7 +27,7 @@ public abstract class Dialog implements AbstractDialog {
     private final DialogSize dialogSize;
     private final List<DialogPage> pageList;
     private int currentPage;
-    private BorderPane borderPane;
+    private final BorderPane borderPane;
     private Label pageLabel;
     private VBox progressBox;
 
@@ -71,7 +73,15 @@ public abstract class Dialog implements AbstractDialog {
         button.setOnAction(actionEvent -> {
             nextPage();
         });
-        hBox.getChildren().add(button);
+        button.setDisable(true);
+        Label label = new Label();
+        label.setTextFill(Color.RED);
+        for (DialogPage dialogPage : pageList) {
+            for (DialogElement dialogElement : dialogPage.getElementList()) {
+                dialogElement.getContent().setOnKeyTyped(event -> button.setDisable(!dialogPage.validateContents()));
+            }
+        }
+        hBox.getChildren().addAll(label, button);
         borderPane.bottomProperty().setValue(hBox);
 
         stage = new Stage();

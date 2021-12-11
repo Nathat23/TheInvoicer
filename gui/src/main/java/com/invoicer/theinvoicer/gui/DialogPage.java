@@ -8,8 +8,8 @@ import java.util.List;
 
 public class DialogPage {
 
-    private List<DialogElement> elementList;
-    private String pageTitle;
+    private final List<DialogElement> elementList;
+    private final String pageTitle;
     private GridPane contents;
 
     public DialogPage(String pageTitle) {
@@ -45,9 +45,24 @@ public class DialogPage {
                 continue;
             }
             Label name = new Label(element.getName() + ":");
-            int row = contents.getRowCount();
-            contents.add(name, 0, row, 1, 1);
-            contents.add(element.getContent(), 1, row, 1, 1);
+            contents.addRow(contents.getRowCount(), name, element.getContent());
         }
+    }
+
+    public boolean validateContents() {
+        for (DialogElement dialogElement : getElementList()) {
+            if (!(dialogElement instanceof EditableElement)) {
+                continue;
+            }
+            if (!((EditableElement) dialogElement).validate()) {
+                return false;
+            }
+            if (dialogElement instanceof TextFieldElement) {
+                if (((TextFieldElement) dialogElement).getContent().getText().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -16,12 +16,12 @@ public class HelloFX extends Application {
             @Override
             public void populate() {
                 DialogPage page = new DialogPage("Beans");
-                page.addElement(new StringTextFieldElement("Ohh"));
+                page.addElement(new StringTextFieldElement("Ohh", true));
                 page.addElement(new LabelElement("Oh!"));
-                page.addElement(new StringTextFieldElement("Neat"));
+                page.addElement(new IntegerTextFieldElement("Neat"));
                 DialogPage page1 = new DialogPage("Boo");
-                page1.addElement(new StringTextFieldElement("Happy birthday"));
-                page1.addElement(new StringTextFieldElement("It is the day"));
+                page1.addElement(new StringTextFieldElement("Happy birthday", false));
+                page1.addElement(new StringTextFieldElement("It is the day", false));
                 addPage(page);
                 addPage(page1);
             }
