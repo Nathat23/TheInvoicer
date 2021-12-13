@@ -1,4 +1,4 @@
-package com.invoicer.theinvoicer.gui;
+package com.invoicer.gui;
 
 import javafx.scene.Node;
 

@@ -33,7 +33,7 @@
             <artifactId>javafx-maven-plugin</artifactId>
             <version>0.0.8</version>
             <configuration>
-                <mainClass>com.invoicer.theinvoicer.gui.HelloFX</mainClass>
+                <mainClass>com.invoicer.gui.HelloFX</mainClass>
             </configuration>
         </plugin>
         <plugin>

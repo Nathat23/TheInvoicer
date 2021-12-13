@@ -1,7 +1,6 @@
-package com.invoicer.theinvoicer.gui;
+package com.invoicer.gui;
 
 import javafx.application.Application;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class HelloFX extends Application {

@@ -1,4 +1,4 @@
-package com.invoicer.theinvoicer;
+package com.invoicer.api;
 
 public interface Attribute<T> {
 

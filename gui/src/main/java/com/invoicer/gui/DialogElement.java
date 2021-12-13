@@ -1,4 +1,4 @@
-package com.invoicer.theinvoicer.gui;
+package com.invoicer.gui;
 
 public abstract class DialogElement implements AbstractElement {
 
