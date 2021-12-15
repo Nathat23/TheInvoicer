@@ -11,6 +11,7 @@ public class DialogPage {
     private final List<DialogElement> elementList;
     private final String pageTitle;
     private GridPane contents;
+    private CustomValidation validation;
 
     public DialogPage(String pageTitle) {
         this.pageTitle = pageTitle;
@@ -47,6 +48,24 @@ public class DialogPage {
             Label name = new Label(element.getName() + ":");
             contents.addRow(contents.getRowCount(), name, element.getContent());
         }
+    }
+
+    public void setValidation(CustomValidation validation) {
+        this.validation = validation;
+    }
+
+    public CustomValidation getValidation() {
+        return validation;
+    }
+
+    public boolean isUserValidated() {
+        if (getValidation() == null) {
+            return true;
+        }
+        if (getValidation().getValidationResult() == null) {
+            return false;
+        }
+        return getValidation().getValidationResult().isValid();
     }
 
     public boolean validateContents() {

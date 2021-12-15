@@ -27,6 +27,7 @@ public abstract class Dialog implements AbstractDialog {
     private final BorderPane borderPane;
     private Label pageLabel;
     private VBox progressBox;
+    private Button button;
 
     public Dialog(String name, DialogSize dialogSize) {
         this.name = name;
@@ -35,7 +36,12 @@ public abstract class Dialog implements AbstractDialog {
         this.borderPane = new BorderPane();
     }
 
+    @Override
     public void showDialog() {
+        showDialog(false);
+    }
+
+    public void showDialog(boolean wait) {
         if (name == null) {
             throw new UnsupportedOperationException("No dialog name");
         }
@@ -66,13 +72,26 @@ public abstract class Dialog implements AbstractDialog {
         // Bottom bar
         HBox hBox = new HBox();
         hBox.setId("button-box");
-        Button button = new Button("Next");
+        Label label = new Label();
+        label.setId("error-text");
+        button = new Button("Next");
         button.setOnAction(actionEvent -> {
+            if (getDialogPage().getValidation() != null) {
+                CustomValidation validation = getDialogPage().getValidation();
+                CustomValidation.ValidationResult validationResult = validation.validate();
+                if (!validationResult.isValid()) {
+                    label.setText(validationResult.getErrorMessage());
+                    return;
+                }
+            }
+            if (currentPage == getPageList().size() - 1) {
+                stage.close();
+            }
             nextPage();
         });
+        button.setText(getCurrentPageId() == getPageList().size() - 1 ? "Exit" : "Next");
         button.setDisable(true);
-        Label label = new Label();
-        label.setTextFill(Color.RED);
+
         for (DialogPage dialogPage : pageList) {
             for (DialogElement dialogElement : dialogPage.getElementList()) {
                 dialogElement.getContent().setOnKeyTyped(event -> button.setDisable(!dialogPage.validateContents()));
@@ -86,6 +105,10 @@ public abstract class Dialog implements AbstractDialog {
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());
         scene.getStylesheets().add("dialog.css");
         stage.setScene(scene);
+        if (wait) {
+            stage.showAndWait();
+            return;
+        }
         stage.show();
     }
 
@@ -140,7 +163,7 @@ public abstract class Dialog implements AbstractDialog {
         progressBox.getChildren().set(0, gridPane);
     }
 
-    enum DialogSize {
+    public enum DialogSize {
         SMALL(500, 300),
         MEDIUM(500, 400),
         LARGE(700, 400);

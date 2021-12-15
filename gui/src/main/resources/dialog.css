@@ -12,6 +12,7 @@
 #button-box {
     -fx-background-color: #EEEEEE;
     -fx-padding: 20;
+    -fx-spacing: 10;
     -fx-alignment: center_right;
 }
 
@@ -30,4 +31,8 @@
     -fx-padding: 10;
     -fx-hgap: 5;
     -fx-vgap: 5;
+}
+
+#error-text {
+    -fx-text-fill: red;
 }
