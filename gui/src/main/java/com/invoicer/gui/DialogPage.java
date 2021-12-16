@@ -58,7 +58,7 @@ public class DialogPage {
         return validation;
     }
 
-    public boolean isUserValidated() {
+    public boolean isCustomValidated() {
         if (getValidation() == null) {
             return true;
         }

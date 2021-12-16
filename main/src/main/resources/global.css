@@ -1,0 +1,11 @@
+#big-text{
+    -fx-font-size: 24pt;
+}
+
+#medium-text{
+    -fx-font-size: 16pt;
+}
+
+#minor-text{
+    -fx-font-size: 12pt;
+}
