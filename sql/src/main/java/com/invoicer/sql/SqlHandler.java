@@ -4,6 +4,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SqlHandler {
 
@@ -11,11 +15,13 @@ public class SqlHandler {
     private final String username;
     private final String password;
     private HikariDataSource hikariDataSource;
+    private final Set<SqlTable<?>> tables;
 
     public SqlHandler(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
+        this.tables = new HashSet<>();
     }
 
     public void initialise() {
@@ -30,5 +36,7 @@ public class SqlHandler {
         hikariDataSource = new HikariDataSource(hikariConfig);
     }
 
-
+    public HikariDataSource getHikariDataSource() {
+        return hikariDataSource;
+    }
 }
