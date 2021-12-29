@@ -1,12 +1,12 @@
 package com.invoicer.sql;
 
-public class Attribute<T> {
+public class Attribute {
 
     private final String name;
     private boolean modified;
-    private T value;
+    private Object value;
 
-    public Attribute(String name, T value) {
+    public Attribute(String name, Object value) {
         this.name = name;
         this.value = value;
     }
@@ -15,11 +15,11 @@ public class Attribute<T> {
         return name;
     }
 
-    public T getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(Object value) {
         this.value = value;
         this.modified = true;
     }

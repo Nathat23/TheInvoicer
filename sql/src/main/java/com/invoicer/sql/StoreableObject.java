@@ -1,13 +1,14 @@
 package com.invoicer.sql;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class StoreableObject implements AbstractStorableObject {
 
-    private int id;
-    private Collection<Attribute<String>> attributes;
+    private final int id;
+    private final Collection<Attribute> attributes;
 
-    public StoreableObject(int id, Collection<Attribute<String>> attributes) {
+    public StoreableObject(int id, Collection<Attribute> attributes) {
         this.id = id;
         this.attributes = attributes;
     }
@@ -18,7 +19,7 @@ public class StoreableObject implements AbstractStorableObject {
     }
 
     @Override
-    public Collection<Attribute<String>> getAttributes() {
-        return attributes;
+    public Collection<Attribute> getAttributes() {
+        return Collections.unmodifiableCollection(attributes);
     }
 }

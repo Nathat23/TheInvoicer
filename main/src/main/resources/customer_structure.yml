@@ -1,0 +1,5 @@
+list:
+  - type: STRING
+    name: "firstname"
+  - type: STRING
+    name: "lastname"

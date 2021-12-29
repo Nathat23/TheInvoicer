@@ -6,5 +6,5 @@ public interface AbstractStorableObject {
 
     int getId();
 
-    Collection<Attribute<String>> getAttributes();
+    Collection<Attribute> getAttributes();
 }
