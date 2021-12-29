@@ -16,8 +16,10 @@ public class SqlTable<T extends StoreableObject> {
     private final Class<T> objectClass;
     private String tableName;
     private final SqlHandler sqlHandler;
+    private final Config config;
 
-    public SqlTable (SqlHandler sqlHandler, Class<T> objectClass) {
+    public SqlTable (SqlHandler sqlHandler, Config config, Class<T> objectClass) {
+        this.config = config;
         this.sqlHandler = sqlHandler;
         this.objectClass = objectClass;
     }
@@ -28,6 +30,20 @@ public class SqlTable<T extends StoreableObject> {
             tableName = storeableObjectData.tableName();
         }
         return tableName;
+    }
+
+    public void init() {
+        try {
+            StringBuilder structure = new StringBuilder("(id int,");
+            for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
+                structure.append(attributeConfig.getName()).append(" ").append(attributeConfig.getType().getStrType()).append(",");
+            }
+            structure.setCharAt(structure.length() - 1, ')');
+            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
+            statement.execute("CREATE TABLE IF NOT EXISTS " + getTableName() + " " + structure);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public T getObject(int id) {
@@ -92,11 +108,9 @@ public class SqlTable<T extends StoreableObject> {
                     updateValues.append(attribute.getName()).append("=VALUES(").append(attribute.getName()).append("),");
                 }
             }
-            parameters.setCharAt(parameters.length() - 1, ' ');
-            values.setCharAt(values.length() - 1, ' ');
+            parameters.setCharAt(parameters.length() - 1, ')');
+            values.setCharAt(values.length() - 1, ')');
             updateValues.setCharAt(updateValues.length() - 1, ' ');
-            parameters.append(")");
-            values.append(")");;
             PreparedStatement statement = sqlHandler.getHikariDataSource().getConnection().prepareStatement(
                     "INSERT INTO " + getTableName() + " " + parameters + " VALUES " + values + " ON DUPLICATE KEY UPDATE " + updateValues);
             statement.setInt(1, object.getId());

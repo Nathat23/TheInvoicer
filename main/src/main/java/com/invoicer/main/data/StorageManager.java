@@ -29,7 +29,8 @@ public class StorageManager {
 
     public void init() {
         for (Map.Entry<Class<? extends StoreableObject>, Manager> entry : getDataManager().getHashMap().entrySet()) {
-            SqlTable<?> sqlTable = new SqlTable<>(getSqlHandler(), entry.getKey());
+            SqlTable<?> sqlTable = new SqlTable<>(getSqlHandler(), entry.getValue().getConfig(), entry.getKey());
+            sqlTable.init();
             for (StoreableObject storeableObject : sqlTable.getObjects()) {
                 entry.getValue().addStoreableObject(storeableObject);
             }
