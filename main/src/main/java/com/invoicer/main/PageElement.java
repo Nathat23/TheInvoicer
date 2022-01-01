@@ -28,9 +28,11 @@ public abstract class PageElement implements AbstractPageElement {
     }
 
     public void generateElement() {
-        Label label = new Label(getName());
-        label.setId("medium-text");
-        vBox.getChildren().add(label);
+        if (getName() != null && getName().length() > 0) {
+            Label label = new Label(getName());
+            label.setId("medium-text");
+            vBox.getChildren().add(label);
+        }
         vBox.getChildren().addAll(nodes);
         generate();
     }
