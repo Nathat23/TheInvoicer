@@ -136,21 +136,22 @@ public class MainWindow extends Application {
         });
         pages.add(customers);
 
-        int rows = 2;
+        int preferredColumns = 2;
         for (Page page : pages) {
             Tab tab = new Tab(page.getName());
             GridPane gridPane = new GridPane();
             gridPane.setGridLinesVisible(true);
             int size = page.getPageElementList().size();
+            int actualColumns = Math.min(size, preferredColumns);
             for (int i = 0; i < size; i++) {
-                int row = i / rows;
-                int remainder = i % rows;
+                int row = i / actualColumns;
+                int column = i % actualColumns;
                 PageElement pageElement = page.getPageElementList().get(i);
                 pageElement.generateElement();
-                gridPane.add(page.getPageElementList().get(i).getContainer(), row, remainder);
+                gridPane.add(page.getPageElementList().get(i).getContainer(), column, row);
             }
             ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(100D / rows);
+            columnConstraints.setPercentWidth(100D / actualColumns);
             for (int i = 0; i < gridPane.getColumnCount(); i++) {
                 gridPane.getColumnConstraints().add(columnConstraints);
             }
