@@ -41,8 +41,8 @@ public class MainWindow extends Application {
             @Override
             public void populate() {
                 DialogPage dialogPage = new DialogPage("Login");
-                StringTextFieldElement username = new StringTextFieldElement("Username", false);
-                StringTextFieldElement password = new StringTextFieldElement("Password", true);
+                StringTextFieldElement username = new StringTextFieldElement("Username");
+                StringTextFieldElement password = new PasswordTextFieldElement("Password");
                 dialogPage.addElement(username);
                 dialogPage.addElement(password);
                 dialogPage.setValidation(new CustomValidation() {
