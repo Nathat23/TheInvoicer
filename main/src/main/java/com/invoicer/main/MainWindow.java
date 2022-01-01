@@ -2,19 +2,32 @@ package com.invoicer.main;
 
 import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
+import com.invoicer.main.data.Customer;
+import com.invoicer.main.data.CustomerManager;
+import com.invoicer.sql.Attribute;
+import com.invoicer.sql.AttributeConfig;
+import com.invoicer.sql.StoreableObject;
 import javafx.application.Application;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MainWindow extends Application {
 
-    private List<Page> pages;
+    private final List<Page> pages;
+    private TheInvoicer theInvoicer;
 
     public MainWindow() {
         this.pages = new ArrayList<>();
@@ -22,6 +35,8 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage stage) {
+        theInvoicer = new TheInvoicer();
+        theInvoicer.init();
         Dialog password = new Dialog("Login", Dialog.DialogSize.SMALL) {
             @Override
             public void populate() {
@@ -99,12 +114,33 @@ public class MainWindow extends Application {
             }
         });
         pages.add(overview);
+
         pages.add(timetable);
+        CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
+        Page customers = new Page("Customers");
+        customers.addPageElement(new PageElement() {
+            @Override
+            public void generate() {
+                StoreableObjectTable<StoreableObject> table = new StoreableObjectTable<>(customerManager.getStoreableObjects());
+                table.setRowFactory(param -> {
+                    TableRow<StoreableObject> row = new TableRow<>();
+                    row.setOnMouseClicked(event -> {
+                        row.getItem().getAttributes().forEach(attribute -> attribute.setValue("bean"));
+                        table.refresh();
+                    });
+                    return row;
+                });
+
+                addElement(table);
+            }
+        });
+        pages.add(customers);
 
         int rows = 2;
         for (Page page : pages) {
             Tab tab = new Tab(page.getName());
             GridPane gridPane = new GridPane();
+            gridPane.setGridLinesVisible(true);
             int size = page.getPageElementList().size();
             for (int i = 0; i < size; i++) {
                 int row = i / rows;
