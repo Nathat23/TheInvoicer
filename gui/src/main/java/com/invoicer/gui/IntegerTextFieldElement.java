@@ -3,7 +3,7 @@ package com.invoicer.gui;
 public class IntegerTextFieldElement extends TextFieldElement {
 
     public IntegerTextFieldElement(String name) {
-        super(name, false);
+        super(name);
     }
 
     @Override
