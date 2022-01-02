@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public abstract class Dialog implements AbstractDialog {
 
     @Override
     public void onClosure() {
-        
+
     }
 
     public void showDialog(boolean wait) {
@@ -56,6 +57,8 @@ public abstract class Dialog implements AbstractDialog {
         if (getPageList().size() == 0) {
             throw new UnsupportedOperationException("No pages have been added to dialog!");
         }
+        stage = new Stage();
+        stage.setTitle(name);
         // Top bar
         VBox vBox = new VBox();
         vBox.setId("header-box");
@@ -89,6 +92,7 @@ public abstract class Dialog implements AbstractDialog {
                 }
             }
             if (currentPage == getPageList().size() - 1) {
+                onClosure();
                 stage.close();
             }
             nextPage();
@@ -104,12 +108,10 @@ public abstract class Dialog implements AbstractDialog {
         hBox.getChildren().addAll(label, button);
         borderPane.bottomProperty().setValue(hBox);
 
-        stage = new Stage();
-        stage.setTitle(name);
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());
         scene.getStylesheets().add("dialog.css");
         stage.setScene(scene);
-        stage.setOnCloseRequest(event -> onClosure());
+        scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event -> onClosure());
         if (wait) {
             stage.showAndWait();
             return;
