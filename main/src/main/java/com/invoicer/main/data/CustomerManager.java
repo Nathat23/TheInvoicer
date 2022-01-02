@@ -12,6 +12,6 @@ public class CustomerManager extends Manager {
 
     @Override
     public StoreableObject createObject(int id) {
-        return new Customer(id, getConfig().getStoredObjectConfig().load());
+        return new Customer(id, getConfig());
     }
 }

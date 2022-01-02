@@ -2,8 +2,8 @@ package com.invoicer.sql;
 
 public class StringAttribute extends Attribute {
 
-    public StringAttribute(String name, String value) {
-        super(name, value);
+    public StringAttribute(AttributeConfig attributeConfig, String name, String value) {
+        super(attributeConfig, name, value);
     }
 
     @Override

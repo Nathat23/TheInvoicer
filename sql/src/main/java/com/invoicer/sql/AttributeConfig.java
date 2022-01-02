@@ -4,6 +4,7 @@ public class AttributeConfig {
 
     private DataType type;
     private String name;
+    private String human;
 
     public String getName() {
         return name;
@@ -15,6 +16,14 @@ public class AttributeConfig {
 
     public DataType getType() {
         return type;
+    }
+
+    public String getHuman() {
+        return human;
+    }
+
+    public void setHuman(String human) {
+        this.human = human;
     }
 
     public void setType(DataType type) {

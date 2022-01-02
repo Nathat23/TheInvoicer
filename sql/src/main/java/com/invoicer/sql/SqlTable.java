@@ -77,21 +77,22 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     private T processResultSet(ResultSet resultSet) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
-        ResultSetMetaData rsMetaData = resultSet.getMetaData();
         Set<Attribute> set = new HashSet<>();
-        for (int i = 2; i <= rsMetaData.getColumnCount(); i++) {
-            set.add(getAttribute(resultSet, i));
+        int i = 2;
+        for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
+            set.add(getAttribute(attributeConfig, resultSet, i));
+            i++;
         }
-        return objectClass.getConstructor(int.class, Collection.class).newInstance(resultSet.getInt(1), set);
+        return objectClass.getConstructor(int.class, Config.class, Collection.class).newInstance(resultSet.getInt(1), config, set);
     }
 
-    private Attribute getAttribute(ResultSet resultSet, int columnId) throws SQLException {
+    private Attribute getAttribute(AttributeConfig config, ResultSet resultSet, int columnId) throws SQLException {
         ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
         switch (resultSetMetaData.getColumnType(columnId)) {
             case Types.VARCHAR:
-                return new StringAttribute(resultSetMetaData.getColumnName(columnId), resultSet.getString(columnId));
+                return new StringAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getString(columnId));
             case Types.INTEGER:
-                return new IntAttribute(resultSetMetaData.getColumnName(columnId), resultSet.getInt(columnId));
+                return new IntAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getInt(columnId));
         }
         throw new UnsupportedOperationException("SQL data type not currently supported! (" + resultSetMetaData.getColumnTypeName(columnId) + ")");
     }

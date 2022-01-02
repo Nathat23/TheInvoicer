@@ -32,7 +32,7 @@ public class StoreableObjectTable<T extends StoreableObject> extends TableView<T
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         getColumns().add(id);
         for (Attribute attribute : object.getAttributes()) {
-            TableColumn<T, String> column = new TableColumn<>(attribute.getName());
+            TableColumn<T, String> column = new TableColumn<>(attribute.getAttributeConfig().getHuman());
             column.setCellValueFactory(as -> {
                 for (Attribute attribute2 : as.getValue().getAttributes()) {
                     if (attribute.getName().equals(attribute2.getName())) {

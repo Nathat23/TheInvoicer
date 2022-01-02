@@ -6,10 +6,16 @@ import java.util.Collections;
 public class StoreableObject implements AbstractStorableObject {
 
     private final int id;
-    private final Collection<Attribute> attributes;
+    private Collection<Attribute> attributes;
+    private final Config config;
 
-    public StoreableObject(int id, Collection<Attribute> attributes) {
+    public StoreableObject(int id, Config config) {
         this.id = id;
+        this.config = config;
+    }
+
+    public StoreableObject(int id, Config config, Collection<Attribute> attributes) {
+        this(id, config);
         this.attributes = attributes;
     }
 
@@ -19,7 +25,15 @@ public class StoreableObject implements AbstractStorableObject {
     }
 
     @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
     public Collection<Attribute> getAttributes() {
+        if (attributes == null) {
+            attributes = getConfig().getStoredObjectConfig().load();
+        }
         return Collections.unmodifiableCollection(attributes);
     }
 }

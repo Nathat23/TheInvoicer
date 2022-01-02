@@ -2,8 +2,8 @@ package com.invoicer.sql;
 
 public class IntAttribute extends Attribute {
 
-    public IntAttribute(String name, int value) {
-        super(name, value);
+    public IntAttribute(AttributeConfig config, String name, int value) {
+        super(config, name, value);
     }
 
     @Override

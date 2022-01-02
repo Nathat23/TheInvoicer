@@ -7,4 +7,6 @@ public interface AbstractStorableObject {
     int getId();
 
     Collection<Attribute> getAttributes();
+
+    Config getConfig();
 }

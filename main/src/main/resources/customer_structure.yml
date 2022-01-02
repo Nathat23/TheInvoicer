@@ -1,5 +1,7 @@
 list:
   - type: STRING
     name: "firstname"
+    human: "Firstname"
   - type: STRING
     name: "lastname"
+    human: "Lastname"

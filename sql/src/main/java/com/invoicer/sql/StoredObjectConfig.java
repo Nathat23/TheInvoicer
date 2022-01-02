@@ -19,11 +19,11 @@ public class StoredObjectConfig {
         List<Attribute> attributes = new ArrayList<>();
         for (AttributeConfig attribute : getList()) {
             if (attribute.getType() == DataType.STRING) {
-                attributes.add(new StringAttribute(attribute.getName(), null));
+                attributes.add(new StringAttribute(attribute, attribute.getName(), null));
                 continue;
             }
             if (attribute.getType() == DataType.INTEGER) {
-                attributes.add(new IntAttribute(attribute.getName(), 0));
+                attributes.add(new IntAttribute(attribute, attribute.getName(), 0));
             }
         }
         return attributes;
