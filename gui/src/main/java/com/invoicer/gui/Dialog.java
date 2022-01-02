@@ -40,6 +40,11 @@ public abstract class Dialog implements AbstractDialog {
         showDialog(false);
     }
 
+    @Override
+    public void onClosure() {
+        
+    }
+
     public void showDialog(boolean wait) {
         if (name == null) {
             throw new UnsupportedOperationException("No dialog name");
@@ -104,6 +109,7 @@ public abstract class Dialog implements AbstractDialog {
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());
         scene.getStylesheets().add("dialog.css");
         stage.setScene(scene);
+        stage.setOnCloseRequest(event -> onClosure());
         if (wait) {
             stage.showAndWait();
             return;
