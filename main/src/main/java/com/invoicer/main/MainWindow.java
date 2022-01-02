@@ -75,7 +75,7 @@ public class MainWindow extends Application {
         tabPane.setTabMinHeight(30);
         tabPane.setTabMinWidth(50);
 
-        Page overview = new Page("Overview");
+        Page overview = new GridPage("Overview", 2);
         overview.addPageElement(new PageElement("Nice") {
             @Override
             public void generate() {
@@ -94,7 +94,7 @@ public class MainWindow extends Application {
                 addElement(new Label("Sure"));
             }
         });
-        Page timetable = new Page("Timetable");
+        Page timetable = new GridPage("Timetable", 2);
         timetable.addPageElement(new PageElement("Nice") {
             @Override
             public void generate() {
@@ -117,7 +117,15 @@ public class MainWindow extends Application {
 
         pages.add(timetable);
         CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
-        Page customers = new Page("Customers");
+        Page customers = new ListPage("Customers");
+        customers.addPageElement(new PageElement() {
+            @Override
+            public void generate() {
+                MenuBar menuBar1 = new MenuBar();
+                menuBar1.getMenus().add(new Menu("Remove"));
+                addElement(menuBar1);
+            }
+        });
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
@@ -136,31 +144,9 @@ public class MainWindow extends Application {
         });
         pages.add(customers);
 
-        int preferredColumns = 2;
         for (Page page : pages) {
             Tab tab = new Tab(page.getName());
-            GridPane gridPane = new GridPane();
-            gridPane.setGridLinesVisible(true);
-            int size = page.getPageElementList().size();
-            int actualColumns = Math.min(size, preferredColumns);
-            for (int i = 0; i < size; i++) {
-                int row = i / actualColumns;
-                int column = i % actualColumns;
-                PageElement pageElement = page.getPageElementList().get(i);
-                pageElement.generateElement();
-                gridPane.add(page.getPageElementList().get(i).getContainer(), column, row);
-            }
-            ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPercentWidth(100D / actualColumns);
-            for (int i = 0; i < gridPane.getColumnCount(); i++) {
-                gridPane.getColumnConstraints().add(columnConstraints);
-            }
-            VBox vBox = new VBox();
-            vBox.setPadding(new Insets(10));
-            Label label = new Label(page.getName());
-            label.setId("big-text");
-            vBox.getChildren().addAll(label, gridPane);
-            tab.setContent(vBox);
+            tab.setContent(page.generatePage());
             tabPane.getTabs().add(tab);
         }
 
