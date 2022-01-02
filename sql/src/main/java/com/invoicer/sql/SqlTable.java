@@ -127,4 +127,13 @@ public class SqlTable<T extends StoreableObject> {
             throwables.printStackTrace();
         }
     }
+
+    public void deleteObject(StoreableObject storeableObject) {
+        try {
+            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
+            statement.execute("DELETE FROM " + getTableName() + " WHERE id=" + storeableObject.getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
