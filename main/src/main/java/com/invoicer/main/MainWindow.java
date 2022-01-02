@@ -133,7 +133,8 @@ public class MainWindow extends Application {
                 table.setRowFactory(param -> {
                     TableRow<StoreableObject> row = new TableRow<>();
                     row.setOnMouseClicked(event -> {
-                        row.getItem().getAttributes().forEach(attribute -> attribute.setValue("bean"));
+                        ModifyDialog modifyDialog = new ModifyDialog(row.getItem());
+                        modifyDialog.showDialog(true);
                         table.refresh();
                     });
                     return row;
