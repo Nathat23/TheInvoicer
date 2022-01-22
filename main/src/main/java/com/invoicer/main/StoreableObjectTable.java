@@ -28,11 +28,11 @@ public class StoreableObjectTable<T extends StoreableObject> extends TableView<T
             return;
         }
         T object = optionalT.get();
-        TableColumn<T, String> id = new TableColumn<>("id");
+        TableColumn<T, Integer> id = new TableColumn<>("Identifier: ");
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         getColumns().add(id);
         for (Attribute attribute : object.getAttributes()) {
-            TableColumn<T, String> column = new TableColumn<>(attribute.getAttributeConfig().getHuman());
+            TableColumn<T, String> column = new TableColumn<>(attribute.getAttributeConfig().getHuman() + ": ");
             column.setCellValueFactory(as -> {
                 for (Attribute attribute2 : as.getValue().getAttributes()) {
                     if (attribute.getName().equals(attribute2.getName())) {
@@ -44,5 +44,8 @@ public class StoreableObjectTable<T extends StoreableObject> extends TableView<T
             getColumns().add(column);
         }
         setItems(FXCollections.observableArrayList(storeableObjects));
+        id.setSortType(TableColumn.SortType.ASCENDING);
+        getSortOrder().add(id);
+        sort();
     }
 }

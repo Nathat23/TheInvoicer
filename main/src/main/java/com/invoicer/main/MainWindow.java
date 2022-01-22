@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import jfxtras.icalendarfx.VCalendar;
@@ -132,24 +133,40 @@ public class MainWindow extends Application {
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                MenuBar menuBar1 = new MenuBar();
-                menuBar1.getMenus().add(new Menu("Remove"));
-                addElement(menuBar1);
-            }
-        });
-        customers.addPageElement(new PageElement() {
-            @Override
-            public void generate() {
                 StoreableObjectTable<StoreableObject> table = new StoreableObjectTable<>(customerManager.getStoreableObjects());
                 table.setRowFactory(param -> {
                     TableRow<StoreableObject> row = new TableRow<>();
                     row.setOnMouseClicked(event -> {
+                        if (event.getClickCount() != 2) {
+                            return;
+                        }
                         ModifyDialog modifyDialog = new ModifyDialog(row.getItem());
                         modifyDialog.showDialog(true);
                         table.refresh();
                     });
                     return row;
                 });
+
+                HBox hBox = new HBox();
+                Button add = new Button("Add");
+                add.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    Customer customer = (Customer) customerManager.create();
+                    ModifyDialog modifyDialog = new ModifyDialog(customer);
+                    modifyDialog.showDialog(true);
+                    table.getItems().add(customer);
+                });
+                Button remove = new Button("Remove");
+                remove.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    Customer selected = (Customer) table.getSelectionModel().getSelectedItem();
+                    if (selected == null) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "You need to select a customer to delete!", ButtonType.CLOSE);
+                        alert.show();
+                        return;
+                    }
+
+                });
+                hBox.getChildren().addAll(add, remove);
+                addElement(hBox);
 
                 addElement(table);
             }

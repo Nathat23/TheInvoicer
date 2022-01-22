@@ -42,7 +42,6 @@ public class TheInvoicer {
                 attribute.setValue("sda");
             }
         }
-        customerManager.addStoreableObject(customer);
         customerManager.getStoreableObjects().forEach(storeableObject -> storeableObject.getAttributes().forEach(stringAttribute -> System.out.println(stringAttribute.getName() + "," + stringAttribute.getValue())));
 
 

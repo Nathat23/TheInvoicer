@@ -34,7 +34,9 @@ public class ModifyDialog extends Dialog {
                 default:
                     throw new IllegalStateException("Unexpected value: " + attribute.getAttributeConfig().getType());
             }
-            dialogElement.getContent().setText(attribute.getValue().toString());
+            if (attribute.getValue() != null) {
+                dialogElement.getContent().setText(attribute.getValue().toString());
+            }
             dialogPage.addElement(dialogElement);
         }
         addPage(dialogPage);
