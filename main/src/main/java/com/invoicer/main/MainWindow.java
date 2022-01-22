@@ -19,7 +19,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import jfxtras.icalendarfx.VCalendar;
+import jfxtras.icalendarfx.properties.calendar.CalendarScale;
+import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -94,25 +99,31 @@ public class MainWindow extends Application {
                 addElement(new Label("Sure"));
             }
         });
-        Page timetable = new GridPage("Timetable", 2);
-        timetable.addPageElement(new PageElement("Nice") {
+        Page timetable = new ListPage("Timetable");
+        timetable.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                addElement(new Label("Haha"));
+                VCalendar vCalendar = new VCalendar();
+                ICalendarAgenda calendarAgenda = new ICalendarAgenda(vCalendar);
+                calendarAgenda.setOrganizer("nathat890@outlook.com");
+
+                HBox buttons = new HBox();
+                Button left = new Button("<");
+                left.setOnMouseClicked(a -> {
+                    calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().minusWeeks(1));
+                });
+                buttons.getChildren().add(left);
+                Button right = new Button(">");
+                right.setOnMouseClicked(a -> {
+                    calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().plusWeeks(1));
+                });
+                buttons.getChildren().add(right);
+
+                addElement(buttons);
+                addElement(calendarAgenda);
             }
         });
-        timetable.addPageElement(new PageElement("But") {
-            @Override
-            public void generate() {
-                addElement(new Label("Oh"));
-            }
-        });
-        timetable.addPageElement(new PageElement("Da") {
-            @Override
-            public void generate() {
-                addElement(new Label("Sure"));
-            }
-        });
+
         pages.add(overview);
 
         pages.add(timetable);
