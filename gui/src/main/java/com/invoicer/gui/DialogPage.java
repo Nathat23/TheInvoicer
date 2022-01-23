@@ -1,7 +1,12 @@
 package com.invoicer.gui;
 
+import javafx.geometry.HPos;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +52,10 @@ public class DialogPage {
             }
             Label name = new Label(element.getName() + ":");
             contents.addRow(contents.getRowCount(), name, element.getContent());
+            ((Region) element.getContent()).setMaxWidth(Double.MAX_VALUE);
         }
+        contents.getColumnConstraints().add(new ColumnConstraints());
+        contents.getColumnConstraints().add(new ColumnConstraints(200, Control.USE_PREF_SIZE, Double.MAX_VALUE, Priority.ALWAYS, HPos.LEFT, true));
     }
 
     public void setValidation(CustomValidation validation) {
