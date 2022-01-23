@@ -3,6 +3,7 @@ package com.invoicer.main.data;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.Config;
 import com.invoicer.sql.DateTimeAttribute;
+import com.invoicer.sql.IntAttribute;
 import com.invoicer.sql.StoreableObject;
 import com.invoicer.sql.StoreableObjectData;
 import com.invoicer.sql.StringAttribute;
@@ -22,6 +23,10 @@ public class Job extends StoreableObject {
         super(id, config, attributeCollection);
     }
 
+    public int getCustomerId() {
+        return ((IntAttribute) getAttributes().get(0)).getValue();
+    }
+
     public LocalDateTime getStartDateTime() {
         return ((DateTimeAttribute) getAttributes().get(1)).getValue();
     }
@@ -32,5 +37,21 @@ public class Job extends StoreableObject {
 
     public String getName() {
         return ((StringAttribute) getAttributes().get(3)).getValue();
+    }
+
+    public void setCustomerId(int customerId) {
+        getAttributes().get(0).setValue(customerId);
+    }
+
+    public void setStartDateTime(LocalDateTime value) {
+        getAttributes().get(1).setValue(value);
+    }
+
+    public void setEndDateTime(LocalDateTime value) {
+        getAttributes().get(2).setValue(value);
+    }
+
+    public void setName(String name) {
+        getAttributes().get(3).setValue(name);
     }
 }

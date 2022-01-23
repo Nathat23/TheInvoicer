@@ -9,12 +9,15 @@ import com.invoicer.main.data.CustomerManager;
 import com.invoicer.sql.DateTimeAttribute;
 import com.invoicer.sql.StoreableObject;
 import com.invoicer.sql.StringAttribute;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import jfxtras.icalendarfx.VCalendar;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.NewAppointmentDialog;
@@ -104,6 +107,7 @@ public class MainWindow extends Application {
         });
 
         JobManager jobManager = (JobManager) theInvoicer.getDataManager().getManager(Job.class);
+        CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
 
         Page timetable = new ListPage("Timetable");
         timetable.addPageElement(new PageElement() {
@@ -143,9 +147,11 @@ public class MainWindow extends Application {
                             return ButtonBar.ButtonData.CANCEL_CLOSE;
                         }
                     }
-                    javafx.scene.control.Dialog<ButtonBar.ButtonData> newAppointmentDialog = new NewAppointmentDialog(param, calendarAgenda.appointmentGroups(), Settings.resources);
-                    Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
-                    return result.orElse(ButtonBar.ButtonData.CANCEL_CLOSE);
+                    //javafx.scene.control.Dialog<ButtonBar.ButtonData> newAppointmentDialog = new NewAppointmentDialog(param, calendarAgenda.appointmentGroups(), Settings.resources);
+                    //Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
+                    EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param);
+                    editJobDialog.showDialog(true);
+                    return ButtonBar.ButtonData.OK_DONE;
                 });
 
                 HBox buttons = new HBox();
@@ -168,7 +174,7 @@ public class MainWindow extends Application {
         pages.add(overview);
 
         pages.add(timetable);
-        CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
+
         Page customers = new ListPage("Customers");
         customers.addPageElement(new PageElement() {
             @Override
@@ -226,6 +232,12 @@ public class MainWindow extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(15), event -> {
+            theInvoicer.getStorageManager().commitChanges();
+            System.out.println("Committed changes");
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     public static void main(String[] args) {
