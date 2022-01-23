@@ -22,12 +22,17 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import jfxtras.icalendarfx.VCalendar;
 import jfxtras.icalendarfx.properties.calendar.CalendarScale;
+import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
+import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.NewAppointmentDialog;
+import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.Settings;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainWindow extends Application {
@@ -107,6 +112,23 @@ public class MainWindow extends Application {
                 VCalendar vCalendar = new VCalendar();
                 ICalendarAgenda calendarAgenda = new ICalendarAgenda(vCalendar);
                 calendarAgenda.setOrganizer("nathat890@outlook.com");
+
+                calendarAgenda.setNewAppointmentDrawnCallback(param -> {
+                    if (param.isWholeDay()) {
+                        return ButtonBar.ButtonData.CANCEL_CLOSE;
+                    }
+                    for (Agenda.Appointment appointment : calendarAgenda.appointments()) {
+                        if (param.getEndLocalDateTime().isAfter(appointment.getStartLocalDateTime()) && param.getEndLocalDateTime().isBefore(appointment.getEndLocalDateTime())) {
+                            return ButtonBar.ButtonData.CANCEL_CLOSE;
+                        }
+                        if (param.getStartLocalDateTime().isAfter(appointment.getStartLocalDateTime()) && param.getStartLocalDateTime().isBefore(appointment.getEndLocalDateTime())) {
+                            return ButtonBar.ButtonData.CANCEL_CLOSE;
+                        }
+                    }
+                    javafx.scene.control.Dialog<ButtonBar.ButtonData> newAppointmentDialog = new NewAppointmentDialog(param, calendarAgenda.appointmentGroups(), Settings.resources);
+                    Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
+                    return result.orElse(ButtonBar.ButtonData.CANCEL_CLOSE);
+                });
 
                 HBox buttons = new HBox();
                 Button left = new Button("<");
