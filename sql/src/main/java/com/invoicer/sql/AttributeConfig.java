@@ -5,6 +5,8 @@ public class AttributeConfig {
     private DataType type;
     private String name;
     private String human;
+    private String foreignKeyTable;
+    private String foreignKeyColumn;
 
     public String getName() {
         return name;
@@ -32,5 +34,21 @@ public class AttributeConfig {
 
     public Class<?> getTypeClass() {
         return this.type.getType();
+    }
+
+    public String getForeignKeyColumn() {
+        return foreignKeyColumn;
+    }
+
+    public String getForeignKeyTable() {
+        return foreignKeyTable;
+    }
+
+    public void setForeignKeyColumn(String foreignKeyColumn) {
+        this.foreignKeyColumn = foreignKeyColumn;
+    }
+
+    public void setForeignKeyTable(String foreignKeyTable) {
+        this.foreignKeyTable = foreignKeyTable;
     }
 }

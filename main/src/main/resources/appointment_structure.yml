@@ -1,0 +1,9 @@
+list:
+  - type: INTEGER
+    name: "customer_id"
+    human: "Customer ID"
+    foreignKeyTable: "customers"
+    foreignKeyColumn: "id"
+  - type: STRING
+    name: "description"
+    human: "Description"

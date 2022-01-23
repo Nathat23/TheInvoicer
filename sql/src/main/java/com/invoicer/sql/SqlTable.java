@@ -34,13 +34,20 @@ public class SqlTable<T extends StoreableObject> {
 
     public void init() {
         try {
-            StringBuilder structure = new StringBuilder("(id int,");
+            StringBuilder structure = new StringBuilder("(id int NOT NULL,");
+            StringBuilder foreignKey = new StringBuilder();
             for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
-                structure.append(attributeConfig.getName()).append(" ").append(attributeConfig.getType().getStrType()).append(",");
+                structure.append(attributeConfig.getName()).append(" ").append(attributeConfig.getType().getStrType()).append(" NOT NULL,");
+                if (attributeConfig.getForeignKeyTable() != null) {
+                    foreignKey.append("FOREIGN KEY (").append(attributeConfig.getName()).append(") ");
+                    foreignKey.append(" REFERENCES ").append(attributeConfig.getForeignKeyTable()).append("(").append(attributeConfig.getForeignKeyColumn()).append("),");
+                }
             }
+            structure.append("PRIMARY KEY (id),");
+            structure.append(foreignKey);
             structure.setCharAt(structure.length() - 1, ')');
             Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS " + getTableName() + " " + structure);
+            statement.execute("CREATE TABLE IF NOT EXISTS " + getTableName() + " " + structure + "");
         } catch (SQLException e) {
             e.printStackTrace();
         }
