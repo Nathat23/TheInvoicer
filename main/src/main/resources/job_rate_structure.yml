@@ -1,0 +1,5 @@
+list:
+  - type: STRING
+    name: "name"
+  - type: INTEGER
+    name: "rate"

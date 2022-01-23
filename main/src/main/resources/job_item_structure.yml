@@ -1,0 +1,20 @@
+list:
+  - type: INTEGER
+    name: "job_id"
+    human: "Job ID"
+    foreignKeyTable: "jobs"
+    foreignKeyColumn: "id"
+  - type: INTEGER
+    name: "rate_id"
+    human: "Rate ID"
+    foreignKeyTable: "job_rates"
+    foreignKeyColumn: "id"
+  - type: STRING
+    name: "name"
+    human: "Name"
+  - type: STRING
+    name: "description"
+    human: "Description"
+  - type: INTEGER
+    name: "units"
+    human: "Units"
