@@ -6,6 +6,7 @@ import com.invoicer.sql.StoreableObject;
 import com.invoicer.sql.StoreableObjectData;
 
 import java.util.Collection;
+import java.util.List;
 
 @StoreableObjectData(tableName = "customers")
 public class Customer extends StoreableObject {
@@ -14,7 +15,7 @@ public class Customer extends StoreableObject {
         super(id, config);
     }
 
-    public Customer(int id, Config config, Collection<Attribute> attributes) {
+    public Customer(int id, Config config, List<Attribute> attributes) {
         super(id, config, attributes);
     }
 

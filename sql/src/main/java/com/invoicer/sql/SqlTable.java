@@ -7,8 +7,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SqlTable<T extends StoreableObject> {
@@ -84,13 +86,13 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     private T processResultSet(ResultSet resultSet) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
-        Set<Attribute> set = new HashSet<>();
+        List<Attribute> set = new ArrayList<>();
         int i = 2;
         for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
             set.add(getAttribute(attributeConfig, resultSet, i));
             i++;
         }
-        return objectClass.getConstructor(int.class, Config.class, Collection.class).newInstance(resultSet.getInt(1), config, set);
+        return objectClass.getConstructor(int.class, Config.class, List.class).newInstance(resultSet.getInt(1), config, set);
     }
 
     private Attribute getAttribute(AttributeConfig config, ResultSet resultSet, int columnId) throws SQLException {
