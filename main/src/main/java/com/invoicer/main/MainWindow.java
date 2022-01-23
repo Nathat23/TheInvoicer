@@ -2,43 +2,39 @@ package com.invoicer.main;
 
 import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
+import com.invoicer.main.data.Job;
+import com.invoicer.main.data.JobManager;
 import com.invoicer.main.data.Customer;
 import com.invoicer.main.data.CustomerManager;
-import com.invoicer.sql.Attribute;
-import com.invoicer.sql.AttributeConfig;
+import com.invoicer.sql.DateTimeAttribute;
 import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.StringAttribute;
 import javafx.application.Application;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import jfxtras.icalendarfx.VCalendar;
-import jfxtras.icalendarfx.properties.calendar.CalendarScale;
-import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
+import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.NewAppointmentDialog;
 import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.Settings;
 import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.AgendaSkinSwitcher;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAmount;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MainWindow extends Application {
 
     private final List<Page> pages;
     private TheInvoicer theInvoicer;
+    private static boolean skipLogin;
 
     public MainWindow() {
         this.pages = new ArrayList<>();
@@ -68,10 +64,11 @@ public class MainWindow extends Application {
                 addPage(dialogPage);
             }
         };
-        password.showDialog(true);
-
-        if (!password.getDialogPage().isCustomValidated()) {
-            return;
+        if (!skipLogin) {
+            password.showDialog(true);
+            if (!password.getDialogPage().isCustomValidated()) {
+                return;
+            }
         }
 
         BorderPane borderPane = new BorderPane();
@@ -105,6 +102,9 @@ public class MainWindow extends Application {
                 addElement(new Label("Sure"));
             }
         });
+
+        JobManager jobManager = (JobManager) theInvoicer.getDataManager().getManager(Job.class);
+
         Page timetable = new ListPage("Timetable");
         timetable.addPageElement(new PageElement() {
             @Override
@@ -112,6 +112,24 @@ public class MainWindow extends Application {
                 VCalendar vCalendar = new VCalendar();
                 ICalendarAgenda calendarAgenda = new ICalendarAgenda(vCalendar);
                 calendarAgenda.setOrganizer("nathat890@outlook.com");
+                calendarAgenda.setSkin(new AgendaWeekSkin(calendarAgenda));
+                calendarAgenda.setNewAppointmentDrawnCallback(param -> ButtonBar.ButtonData.OK_DONE);
+
+                LocalTime earliestTime = LocalTime.of(9, 0);
+
+                for (StoreableObject storeableObject : jobManager.getStoreableObjects()) {
+                    Job job = (Job) storeableObject;
+                    Agenda.Appointment appointment = new Agenda.AppointmentImplLocal();
+                    appointment.setStartLocalDateTime(job.getStartDateTime());
+                    appointment.setEndLocalDateTime(job.getEndDateTime());
+                    appointment.setSummary(job.getName());
+                    calendarAgenda.appointments().add(appointment);
+                    if (job.getStartDateTime().toLocalTime().isBefore(earliestTime)) {
+                        earliestTime = job.getStartDateTime().toLocalTime();
+                    }
+                }
+
+                calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().withHour(earliestTime.getHour()).withMinute(earliestTime.getMinute()));
 
                 calendarAgenda.setNewAppointmentDrawnCallback(param -> {
                     if (param.isWholeDay()) {
@@ -211,6 +229,9 @@ public class MainWindow extends Application {
     }
 
     public static void main(String[] args) {
+        if (Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("-skip-login"))) {
+            skipLogin = true;
+        }
         launch(args);
     }
 }

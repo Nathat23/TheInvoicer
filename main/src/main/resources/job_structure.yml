@@ -4,12 +4,12 @@ list:
     human: "Customer ID"
     foreignKeyTable: "customers"
     foreignKeyColumn: "id"
-  - type: STRING
-    name: "description"
-    human: "Description"
   - type: DATETIME
     name: "start_datetime"
     human: "Start DateTime"
   - type: DATETIME
     name: "end_datetime"
     human: "End DateTime"
+  - type: STRING
+    name: "name"
+    human: "Name"
