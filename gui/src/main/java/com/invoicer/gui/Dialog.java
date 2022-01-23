@@ -101,9 +101,7 @@ public abstract class Dialog implements AbstractDialog {
         button.setDisable(true);
 
         for (DialogPage dialogPage : pageList) {
-            for (DialogElement dialogElement : dialogPage.getElementList()) {
-                dialogElement.getContent().setOnKeyTyped(event -> button.setDisable(!dialogPage.validateContents()));
-            }
+            dialogPage.getContents().setOnMouseMoved(event -> button.setDisable(!dialogPage.validateContents()));
         }
         hBox.getChildren().addAll(label, button);
         borderPane.bottomProperty().setValue(hBox);

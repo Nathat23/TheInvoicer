@@ -31,7 +31,7 @@ public class ComboBoxElement<T> extends StandardDialogElement implements Editabl
 
     @Override
     public boolean validate() {
-        return true;
+        return !getContent().getSelectionModel().isEmpty();
     }
 
     @Override
