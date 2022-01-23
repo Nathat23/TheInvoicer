@@ -7,3 +7,9 @@ list:
   - type: STRING
     name: "description"
     human: "Description"
+  - type: DATETIME
+    name: "start_datetime"
+    human: "Start DateTime"
+  - type: DATETIME
+    name: "end_datetime"
+    human: "End DateTime"

@@ -100,6 +100,8 @@ public class SqlTable<T extends StoreableObject> {
                 return new StringAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getString(columnId));
             case Types.INTEGER:
                 return new IntAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getInt(columnId));
+            case Types.TIMESTAMP:
+                return new DateTimeAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getTimestamp(columnId).toLocalDateTime());
         }
         throw new UnsupportedOperationException("SQL data type not currently supported! (" + resultSetMetaData.getColumnTypeName(columnId) + ")");
     }

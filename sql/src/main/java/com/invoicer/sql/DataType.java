@@ -1,10 +1,12 @@
 package com.invoicer.sql;
 
 import java.sql.Types;
+import java.time.LocalDateTime;
 
 public enum DataType {
     STRING(String.class, Types.VARCHAR, "varchar(255)"),
-    INTEGER(int.class, Types.INTEGER, "int");
+    INTEGER(int.class, Types.INTEGER, "int"),
+    DATETIME(LocalDateTime.class, Types.TIMESTAMP, "TIMESTAMP");
 
     private final Class<?> type;
     private final int sqlType;

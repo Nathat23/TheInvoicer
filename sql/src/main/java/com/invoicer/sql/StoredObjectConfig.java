@@ -24,6 +24,10 @@ public class StoredObjectConfig {
             }
             if (attribute.getType() == DataType.INTEGER) {
                 attributes.add(new IntAttribute(attribute, attribute.getName(), 0));
+                continue;
+            }
+            if (attribute.getType() == DataType.DATETIME) {
+                attributes.add(new DateTimeAttribute(attribute, attribute.getName(), null));
             }
         }
         return attributes;
