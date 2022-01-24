@@ -43,14 +43,14 @@ public class TheInvoicer {
         theInvoicer.init();
 
         CustomerManager customerManager = (CustomerManager) theInvoicer.dataManager.getManager(Customer.class);
-        Customer customer = (Customer) customerManager.create();
+        Customer customer = (Customer) customerManager.createAndStore();
         for (Attribute attribute : customer.getAttributes()) {
             if (attribute != null) {
                 attribute.setValue("sda");
             }
         }
         JobRateManager jobRateManager = (JobRateManager) theInvoicer.dataManager.getManager(JobRate.class);
-        JobRate jobRate = (JobRate) jobRateManager.create();
+        JobRate jobRate = (JobRate) jobRateManager.createAndStore();
         jobRate.getAttributes().get(0).setValue("SingleTimeRate");
         jobRate.getAttributes().get(1).setValue(99999999);
 

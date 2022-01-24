@@ -11,7 +11,9 @@ public interface IManager {
 
     StoreableObject createObject(int id);
 
-    StoreableObject create();
+    StoreableObject createObject();
+
+    StoreableObject createAndStore();
 
     Collection<StoreableObject> getStoreableObjects();
 

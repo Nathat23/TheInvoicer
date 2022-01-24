@@ -20,10 +20,15 @@ abstract class Manager implements IManager {
     }
 
     @Override
-    public StoreableObject create() {
-        StoreableObject storeableObject = createObject(hashSet.size());
+    public StoreableObject createAndStore() {
+        StoreableObject storeableObject = createObject();
         addStoreableObject(storeableObject);
         return storeableObject;
+    }
+
+    @Override
+    public StoreableObject createObject() {
+        return createObject(hashSet.size());
     }
 
     @Override

@@ -6,9 +6,7 @@ import com.invoicer.main.data.Job;
 import com.invoicer.main.data.JobManager;
 import com.invoicer.main.data.Customer;
 import com.invoicer.main.data.CustomerManager;
-import com.invoicer.sql.DateTimeAttribute;
 import com.invoicer.sql.StoreableObject;
-import com.invoicer.sql.StringAttribute;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -20,18 +18,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import jfxtras.icalendarfx.VCalendar;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.NewAppointmentDialog;
-import jfxtras.internal.scene.control.skin.agenda.icalendar.base24hour.Settings;
 import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.AgendaSkinSwitcher;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class MainWindow extends Application {
 
@@ -196,7 +189,7 @@ public class MainWindow extends Application {
                 HBox hBox = new HBox();
                 Button add = new Button("Add");
                 add.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    Customer customer = (Customer) customerManager.create();
+                    Customer customer = (Customer) customerManager.createAndStore();
                     ModifyDialog modifyDialog = new ModifyDialog(customer);
                     modifyDialog.showDialog(true);
                     table.getItems().add(customer);

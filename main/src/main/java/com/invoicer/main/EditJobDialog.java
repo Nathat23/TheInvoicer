@@ -60,7 +60,7 @@ public class EditJobDialog extends Dialog {
     @Override
     public void onClosure() {
         JobManager jobManager = (JobManager) dataManager.getManager(Job.class);
-        Job job = (Job) jobManager.create();
+        Job job = (Job) jobManager.createAndStore();
         job.setCustomerId(customer.getId());
         job.setStartDateTime(appointment.getStartLocalDateTime());
         job.setEndDateTime(appointment.getEndLocalDateTime());
