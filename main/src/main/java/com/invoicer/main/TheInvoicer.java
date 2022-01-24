@@ -27,10 +27,10 @@ public class TheInvoicer {
         dataManager.addManager(Customer.class, new CustomerManager(new Config(inputStream)));
         InputStream inputStream2 = TheInvoicer.class.getResourceAsStream("/job_structure.yml");
         dataManager.addManager(Job.class, new JobManager(new Config(inputStream2)));
-        InputStream inputStream3 = TheInvoicer.class.getResourceAsStream("/job_item_structure.yml");
-        dataManager.addManager(JobItem.class, new JobItemManager(new Config(inputStream3)));
         InputStream inputStream4 = TheInvoicer.class.getResourceAsStream("/job_rate_structure.yml");
         dataManager.addManager(JobRate.class, new JobRateManager(new Config(inputStream4)));
+        InputStream inputStream3 = TheInvoicer.class.getResourceAsStream("/job_item_structure.yml");
+        dataManager.addManager(JobItem.class, new JobItemManager(new Config(inputStream3)));
 
         SqlHandler sqlHandler = new SqlHandler("jdbc:mariadb://localhost:3306/invoicer", "new_user" , "new_password");
         sqlHandler.initialise();
