@@ -85,7 +85,8 @@ public class DialogPage {
                 return false;
             }
             if (dialogElement instanceof TextFieldElement) {
-                if (((TextFieldElement) dialogElement).getContent().getText().isEmpty()) {
+                String text = ((TextFieldElement) dialogElement).getContent().getText();
+                if (text == null || text.isEmpty()) {
                     return false;
                 }
             }
