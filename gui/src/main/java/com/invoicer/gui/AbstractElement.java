@@ -8,4 +8,6 @@ public interface AbstractElement {
 
     Node getContent();
 
+    Node createElement();
+
 }

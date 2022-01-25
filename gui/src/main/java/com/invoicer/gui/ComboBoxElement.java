@@ -15,10 +15,15 @@ public class ComboBoxElement<T> extends StandardDialogElement implements Editabl
     @Override
     public ComboBox<T> getContent() {
         if (comboBox == null) {
-            comboBox = new ComboBox<>();
+            comboBox = createElement();
             comboBox.setEditable(false);
         }
         return comboBox;
+    }
+
+    @Override
+    public ComboBox<T> createElement() {
+        return new ComboBox<>();
     }
 
     public void addItems(List<T> items) {

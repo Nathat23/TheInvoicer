@@ -14,6 +14,11 @@ public class LabelElement extends WideDialogElement {
 
     @Override
     public Node getContent() {
+        return createElement();
+    }
+
+    @Override
+    public Node createElement() {
         return new Label(text);
     }
 }

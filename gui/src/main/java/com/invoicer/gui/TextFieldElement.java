@@ -13,9 +13,13 @@ public abstract class TextFieldElement extends StandardDialogElement implements 
     @Override
     public TextField getContent() {
         if (textArea == null) {
-            textArea = new TextField();
+            textArea = createElement();
         }
         return textArea;
     }
 
+    @Override
+    public TextField createElement() {
+        return new TextField();
+    }
 }
