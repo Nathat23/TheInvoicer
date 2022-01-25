@@ -104,6 +104,10 @@ public class SqlTable<T extends StoreableObject> {
                 return new IntAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getInt(columnId));
             case Types.TIMESTAMP:
                 return new DateTimeAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getTimestamp(columnId).toLocalDateTime());
+            case Types.BIT:
+                return new BooleanAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getBoolean(columnId));
+            case Types.DOUBLE:
+                return new DoubleAttribute(config, resultSetMetaData.getColumnName(columnId), resultSet.getDouble(columnId));
         }
         throw new UnsupportedOperationException("SQL data type not currently supported! (" + resultSetMetaData.getColumnTypeName(columnId) + ")");
     }

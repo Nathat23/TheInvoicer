@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 public enum DataType {
     STRING(String.class, Types.VARCHAR, "varchar(255)"),
     INTEGER(int.class, Types.INTEGER, "int"),
-    DATETIME(LocalDateTime.class, Types.TIMESTAMP, "TIMESTAMP");
+    DATETIME(LocalDateTime.class, Types.TIMESTAMP, "TIMESTAMP"),
+    BOOLEAN(boolean.class, Types.BIT, "BIT(1)"),
+    DOUBLE(double.class, Types.DOUBLE, "double");
 
     private final Class<?> type;
     private final int sqlType;
