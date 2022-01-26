@@ -47,6 +47,7 @@ public class ViewRateDialog extends Dialog {
                 jobRateStoreableObjectTable = new StoreableObjectTable<>(jobRateList, true);
                 jobRateStoreableObjectTable.setRowFactory(param -> {
                     TableRow<JobRate> jobRateTableRow = new TableRow<>();
+
                     return jobRateTableRow;
                 });
                 return jobRateStoreableObjectTable;

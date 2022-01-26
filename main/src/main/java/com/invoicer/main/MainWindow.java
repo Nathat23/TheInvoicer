@@ -69,6 +69,15 @@ public class MainWindow extends Application {
 
         BorderPane borderPane = new BorderPane();
         MenuBar menuBar = new MenuBar();
+        Menu invMenu = new Menu("Invoicing");
+        MenuItem modifyRates = new MenuItem("Rates");
+        modifyRates.setOnAction(event -> {
+            System.out.println("dadsa");
+            ViewRateDialog viewRateDialog = new ViewRateDialog(theInvoicer.getDataManager());
+            viewRateDialog.showDialog();
+        });
+        invMenu.getItems().add(modifyRates);
+        menuBar.getMenus().add(invMenu);
         Menu menu = new Menu("Help");
         menuBar.getMenus().add(menu);
         borderPane.topProperty().setValue(menuBar);
@@ -113,7 +122,6 @@ public class MainWindow extends Application {
                 calendarAgenda.setNewAppointmentDrawnCallback(param -> ButtonBar.ButtonData.OK_DONE);
 
                 LocalTime earliestTime = LocalTime.of(9, 0);
-
                 for (StoreableObject storeableObject : jobManager.getStoreableObjects()) {
                     Job job = (Job) storeableObject;
                     Agenda.Appointment appointment = new Agenda.AppointmentImplLocal();
@@ -142,9 +150,24 @@ public class MainWindow extends Application {
                     }
                     //javafx.scene.control.Dialog<ButtonBar.ButtonData> newAppointmentDialog = new NewAppointmentDialog(param, calendarAgenda.appointmentGroups(), Settings.resources);
                     //Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
-                    EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param);
+                    EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, null);
                     editJobDialog.showDialog(true);
                     return ButtonBar.ButtonData.OK_DONE;
+                });
+
+                calendarAgenda.setEditAppointmentCallback(param -> {
+                    Job job= null;
+                    for (StoreableObject object : jobManager.getStoreableObjects()) {
+                        Job tJob = (Job) object;
+                        if (tJob.getName().equals(param.getSummary())) {
+                            job = (Job) object;
+                            break;
+                        }
+                    }
+                    System.out.println(job == null);
+                    EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, job);
+                    editJobDialog.showDialog(true);
+                    return null;
                 });
 
                 HBox buttons = new HBox();
@@ -172,14 +195,14 @@ public class MainWindow extends Application {
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                StoreableObjectTable<StoreableObject> table = new StoreableObjectTable<>(customerManager.getStoreableObjects());
+                StoreableObjectTable<StoreableObject> table = new StoreableObjectTable<>(customerManager.getStoreableObjects(), true);
                 table.setRowFactory(param -> {
                     TableRow<StoreableObject> row = new TableRow<>();
                     row.setOnMouseClicked(event -> {
                         if (event.getClickCount() != 2) {
                             return;
                         }
-                        ModifyDialog modifyDialog = new ModifyDialog(row.getItem());
+                        GenericModifyDialog modifyDialog = new GenericModifyDialog(row.getItem());
                         modifyDialog.showDialog(true);
                         table.refresh();
                     });
@@ -190,7 +213,7 @@ public class MainWindow extends Application {
                 Button add = new Button("Add");
                 add.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     Customer customer = (Customer) customerManager.createAndStore();
-                    ModifyDialog modifyDialog = new ModifyDialog(customer);
+                    GenericModifyDialog modifyDialog = new GenericModifyDialog(customer);
                     modifyDialog.showDialog(true);
                     table.getItems().add(customer);
                 });
