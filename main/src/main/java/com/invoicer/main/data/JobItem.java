@@ -39,4 +39,24 @@ public class JobItem extends StoreableObject {
     public int getUnits() {
         return ((IntAttribute) getAttributes().get(4)).getValue();
     }
+
+    public void setJobId(int newJobId) {
+        getAttributes().get(0).setValue(newJobId);
+    }
+
+    public void setRateId(int newRateId) {
+        getAttributes().get(1).setValue(newRateId);
+    }
+
+    public void setName(String newName) {
+        getAttributes().get(2).setValue(newName);
+    }
+
+    public void setDescription(String newDescription) {
+        getAttributes().get(3).setValue(newDescription);
+    }
+
+    public void setUnits(int newUnits) {
+        getAttributes().get(4).setValue(newUnits);
+    }
 }

@@ -13,3 +13,6 @@ list:
   - type: STRING
     name: "name"
     human: "Name"
+  - type: STRING
+    name: "description"
+    human: "Description"

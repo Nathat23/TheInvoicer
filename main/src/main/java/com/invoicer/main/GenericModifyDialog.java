@@ -9,12 +9,12 @@ import com.invoicer.gui.TextFieldElement;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.StoreableObject;
 
-public class ModifyDialog extends Dialog {
+public class GenericModifyDialog extends Dialog {
 
     private final StoreableObject object;
     private DialogPage dialogPage;
 
-    public ModifyDialog(StoreableObject object) {
+    public GenericModifyDialog(StoreableObject object) {
         super("Modify " + object.getClass().getSimpleName(), DialogSize.MEDIUM);
         this.object = object;
     }

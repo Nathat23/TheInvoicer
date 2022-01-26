@@ -1,19 +1,32 @@
 package com.invoicer.main;
 
-import com.invoicer.gui.ComboBoxElement;
 import com.invoicer.gui.Dialog;
 import com.invoicer.gui.DialogPage;
 import com.invoicer.gui.StringTextFieldElement;
+import com.invoicer.gui.WideDialogElement;
 import com.invoicer.main.data.Customer;
 import com.invoicer.main.data.CustomerManager;
 import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.Job;
+import com.invoicer.main.data.JobItem;
+import com.invoicer.main.data.JobItemManager;
 import com.invoicer.main.data.JobManager;
-import com.invoicer.sql.Attribute;
+import com.invoicer.main.data.JobRate;
+import com.invoicer.main.data.JobRateManager;
 import com.invoicer.sql.StoreableObject;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableRow;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.util.Callback;
 import jfxtras.scene.control.agenda.Agenda;
-
-import java.util.HashMap;
 
 public class EditJobDialog extends Dialog {
 
@@ -21,49 +34,126 @@ public class EditJobDialog extends Dialog {
     private Customer customer;
     private Agenda.Appointment appointment;
     private final DataManager dataManager;
+    private boolean newJob;
 
-    public EditJobDialog(DataManager dataManager, Agenda.Appointment appointment) {
+    public EditJobDialog(DataManager dataManager, Agenda.Appointment appointment, Job job) {
         super("Edit Job", DialogSize.LARGE);
         this.appointment = appointment;
         this.dataManager = dataManager;
+        this.job = job;
     }
 
     @Override
     public void populate() {
         CustomerManager customerManager = (CustomerManager) dataManager.getManager(Customer.class);
+        JobManager jobManager = (JobManager) dataManager.getManager(Job.class);
+        if (job == null) {
+            newJob = true;
+            job = (Job) jobManager.createObject();
+            job.setStartDateTime(appointment.getStartLocalDateTime());
+            job.setEndDateTime(appointment.getEndLocalDateTime());
+        }
         DialogPage dialogPage = new DialogPage("Editing Job");
-        ComboBoxElement<String> comboBoxElement = new ComboBoxElement<>("Customer");
-        HashMap<String, Customer> customerHashMap = new HashMap<>();
+        StoredObjectBoxElement<Customer> comboBoxElement = new StoredObjectBoxElement<>("Customer");
         for (StoreableObject customer : customerManager.getStoreableObjects()) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("ID: ").append(customer.getId()).append(" (");
-            for (Attribute attribute : customer.getAttributes()) {
-                builder.append(attribute.getValue()).append(",");
-            }
-            builder.setCharAt(builder.length() - 1, ')');
-            comboBoxElement.addItem(builder.toString());
-            customerHashMap.put(builder.toString(), (Customer) customer);
+            comboBoxElement.getContent().getItems().add((Customer) customer);
         }
         comboBoxElement.getContent().getSelectionModel().selectedIndexProperty().addListener(observable -> {
-            customer = customerHashMap.get(comboBoxElement.getContent().getSelectionModel().getSelectedItem());
+            customer = comboBoxElement.getContent().getSelectionModel().getSelectedItem();
+            job.setCustomerId(customer.getId());
         });
         dialogPage.addElement(comboBoxElement);
-        StringTextFieldElement textFieldElement = new StringTextFieldElement("Name");
-        textFieldElement.getContent().textProperty().addListener((observable, oldValue, newValue) -> appointment.setSummary(newValue));
-        dialogPage.addElement(textFieldElement);
+        StringTextFieldElement nameElement = new StringTextFieldElement("Name");
+        nameElement.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
+            appointment.setSummary(newValue);
+            job.setName(newValue);
+        });
+        dialogPage.addElement(nameElement);
         StringTextFieldElement description = new StringTextFieldElement("Description");
-        description.getContent().textProperty().addListener((observable, oldValue, newValue) -> appointment.setDescription(newValue));
+        description.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
+            appointment.setDescription(newValue);
+            job.setDescription(newValue);
+        });
         dialogPage.addElement(description);
+        if (!newJob) {
+            comboBoxElement.getContent().getSelectionModel().select((Customer) customerManager.getStoreableObject(job.getCustomerId()));
+            nameElement.getContent().setText(job.getName());
+            description.getContent().setText(job.getDescription());
+        }
+        JobItemManager jobItemManager = (JobItemManager) dataManager.getManager(JobItem.class);
+        JobRateManager jobRateManager = (JobRateManager) dataManager.getManager(JobRate.class);
+        WideDialogElement wideDialogElement = new WideDialogElement("Item"){
+            VBox vBox;
+
+            @Override
+            public Node getContent() {
+                if (vBox == null) {
+                    vBox = createElement();
+                }
+                return vBox;
+            }
+
+            @Override
+            public VBox createElement() {
+                VBox vBox = new VBox();
+                GridPane guide = new GridPane();
+                guide.setPadding(new Insets(0, 5, 0, 5));
+                guide.addRow(0, new Label("Name"), new Label("Units"), new Label("Cost Per Unit"));
+                ColumnConstraints wide = new ColumnConstraints();
+                wide.setPercentWidth(50);
+                ColumnConstraints thin = new ColumnConstraints();
+                thin.setPercentWidth(20);
+                guide.getColumnConstraints().addAll(wide, thin, thin);
+                vBox.getChildren().add(guide);
+                ListView<JobItem> jobItemListView = new ListView<>();
+                jobItemListView.setCellFactory(new Callback<>() {
+                    @Override
+                    public ListCell<JobItem> call(ListView<JobItem> param) {
+                        ListCell<JobItem> listCell = new ListCell<>() {
+                            @Override
+                            public void updateItem(JobItem jobItem, boolean empty) {
+                                super.updateItem(jobItem, empty);
+                                if (jobItem == null) {
+                                    return;
+                                }
+                                GridPane gridPane = new GridPane();
+                                VBox name = new VBox();
+                                Label nameLabel = new Label(jobItem.getName());
+                                nameLabel.setFont(Font.font(nameLabel.getFont().getFamily(), FontWeight.BOLD, nameLabel.getFont().getSize()));
+                                Label desc = new Label(jobItem.getDescription());
+                                name.getChildren().addAll(nameLabel, desc);
+                                Label units = new Label(jobItem.getUnits() + "");
+                                JobRate rate = (JobRate) jobRateManager.getStoreableObject(jobItem.getRateId());
+                                Label rateLabel = new Label(rate.getRate() + "");
+                                gridPane.addRow(0, name, units, rateLabel);
+                                gridPane.getColumnConstraints().addAll(guide.getColumnConstraints());
+                                setGraphic(gridPane);
+                            }
+                        };
+                        listCell.setOnMouseClicked(event -> {
+                            EditJobItemDialog editJobItemDialog = new EditJobItemDialog(dataManager, listCell.getItem());
+                            editJobItemDialog.showDialog(true);
+                        });
+                        return listCell;
+                    }
+                });
+                for (JobItem jobItem : jobItemManager.findItemsForJob(job)) {
+                    jobItemListView.getItems().add(jobItem);
+                }
+                vBox.getChildren().add(jobItemListView);
+                return vBox;
+            }
+        };
+        dialogPage.addElement(wideDialogElement);
         addPage(dialogPage);
     }
 
     @Override
     public void onClosure() {
+        if (!newJob) {
+            return;
+        }
         JobManager jobManager = (JobManager) dataManager.getManager(Job.class);
-        Job job = (Job) jobManager.createAndStore();
-        job.setCustomerId(customer.getId());
-        job.setStartDateTime(appointment.getStartLocalDateTime());
-        job.setEndDateTime(appointment.getEndLocalDateTime());
-        job.setName(appointment.getSummary());
+        jobManager.addStoreableObject(job);
     }
 }

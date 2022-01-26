@@ -52,7 +52,8 @@ public class TheInvoicer {
         JobRateManager jobRateManager = (JobRateManager) theInvoicer.dataManager.getManager(JobRate.class);
         JobRate jobRate = (JobRate) jobRateManager.createAndStore();
         jobRate.getAttributes().get(0).setValue("SingleTimeRate");
-        jobRate.getAttributes().get(1).setValue(99999999);
+        jobRate.getAttributes().get(1).setValue(true);
+        jobRate.getAttributes().get(2).setValue(1.23);
 
         theInvoicer.storageManager.commitChanges();
 

@@ -39,6 +39,10 @@ public class Job extends StoreableObject {
         return ((StringAttribute) getAttributes().get(3)).getValue();
     }
 
+    public String getDescription() {
+        return ((StringAttribute) getAttributes().get(4)).getValue();
+    }
+
     public void setCustomerId(int customerId) {
         getAttributes().get(0).setValue(customerId);
     }
@@ -53,5 +57,9 @@ public class Job extends StoreableObject {
 
     public void setName(String name) {
         getAttributes().get(3).setValue(name);
+    }
+
+    public void setDescription(String description) {
+        getAttributes().get(4).setValue(description);
     }
 }

@@ -2,6 +2,7 @@ package com.invoicer.main.data;
 
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.Config;
+import com.invoicer.sql.DoubleAttribute;
 import com.invoicer.sql.IntAttribute;
 import com.invoicer.sql.StoreableObject;
 import com.invoicer.sql.StoreableObjectData;
@@ -24,7 +25,7 @@ public class JobRate extends StoreableObject {
         return ((StringAttribute) getAttributes().get(0)).getValue();
     }
 
-    public int getRate() {
-        return ((IntAttribute) getAttributes().get(1)).getValue();
+    public double getRate() {
+        return ((DoubleAttribute) getAttributes().get(2)).getValue();
     }
 }

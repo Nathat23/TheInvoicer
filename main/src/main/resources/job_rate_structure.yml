@@ -1,5 +1,7 @@
 list:
   - type: STRING
     name: "name"
-  - type: INTEGER
+  - type: BOOLEAN
+    name: "hourly"
+  - type: DOUBLE
     name: "rate"

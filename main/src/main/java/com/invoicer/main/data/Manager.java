@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract class Manager implements IManager {
+public abstract class Manager implements IManager {
 
     private final HashMap<Integer, StoreableObject> hashSet;
     private final Config config;
