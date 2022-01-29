@@ -5,18 +5,20 @@ import com.invoicer.sql.SqlTable;
 import com.invoicer.sql.StoreableObject;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class StorageManager {
 
     private final SqlHandler sqlHandler;
     private final DataManager dataManager;
-    private final HashMap<Manager, SqlTable<?>> hashMap;
+    private final LinkedHashMap<Manager, SqlTable<?>> hashMap;
 
     public StorageManager(SqlHandler sqlHandler, DataManager dataManager) {
         this.sqlHandler = sqlHandler;
         this.dataManager = dataManager;
-        this.hashMap = new HashMap<>();
+        this.hashMap = new LinkedHashMap<>();
     }
 
     private DataManager getDataManager() {

@@ -72,7 +72,6 @@ public class MainWindow extends Application {
         Menu invMenu = new Menu("Invoicing");
         MenuItem modifyRates = new MenuItem("Rates");
         modifyRates.setOnAction(event -> {
-            System.out.println("dadsa");
             ViewRateDialog viewRateDialog = new ViewRateDialog(theInvoicer.getDataManager());
             viewRateDialog.showDialog();
         });
@@ -164,7 +163,6 @@ public class MainWindow extends Application {
                             break;
                         }
                     }
-                    System.out.println(job == null);
                     EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, job);
                     editJobDialog.showDialog(true);
                     return null;
@@ -195,42 +193,8 @@ public class MainWindow extends Application {
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                StoreableObjectTable<StoreableObject> table = new StoreableObjectTable<>(customerManager.getStoreableObjects(), true);
-                table.setRowFactory(param -> {
-                    TableRow<StoreableObject> row = new TableRow<>();
-                    row.setOnMouseClicked(event -> {
-                        if (event.getClickCount() != 2) {
-                            return;
-                        }
-                        GenericModifyDialog modifyDialog = new GenericModifyDialog(row.getItem());
-                        modifyDialog.showDialog(true);
-                        table.refresh();
-                    });
-                    return row;
-                });
-
-                HBox hBox = new HBox();
-                Button add = new Button("Add");
-                add.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    Customer customer = (Customer) customerManager.createAndStore();
-                    GenericModifyDialog modifyDialog = new GenericModifyDialog(customer);
-                    modifyDialog.showDialog(true);
-                    table.getItems().add(customer);
-                });
-                Button remove = new Button("Remove");
-                remove.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    Customer selected = (Customer) table.getSelectionModel().getSelectedItem();
-                    if (selected == null) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "You need to select a customer to delete!", ButtonType.CLOSE);
-                        alert.show();
-                        return;
-                    }
-
-                });
-                hBox.getChildren().addAll(add, remove);
-                addElement(hBox);
-
-                addElement(table);
+                StoreableObjectViewer<Customer> table = new StoreableObjectViewer<>(theInvoicer.getDataManager(), customerManager.getStoreableObjects(), Customer.class);
+                addElement(table.getContent());
             }
         });
         pages.add(customers);

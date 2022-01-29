@@ -2,6 +2,7 @@ package com.invoicer.gui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -27,7 +28,8 @@ public abstract class Dialog implements AbstractDialog {
     private final BorderPane borderPane;
     private Label pageLabel;
     private VBox progressBox;
-    private Button button;
+    private Button nextButton;
+    private Button cancelButton;
 
     public Dialog(String name, DialogSize dialogSize) {
         this.name = name;
@@ -77,12 +79,18 @@ public abstract class Dialog implements AbstractDialog {
         updateStatus();
         borderPane.leftProperty().setValue(progressBox);
         // Bottom bar
-        HBox hBox = new HBox();
+        ButtonBar hBox = new ButtonBar();
         hBox.setId("button-box");
         Label label = new Label();
         label.setId("error-text");
-        button = new Button("Next");
-        button.setOnAction(actionEvent -> {
+        cancelButton = new Button("Cancel");
+        cancelButton.setOnMouseClicked(mouseEvent -> {
+            stage.close();
+        });
+        ButtonBar.setButtonData(cancelButton, ButtonBar.ButtonData.CANCEL_CLOSE);
+        hBox.getButtons().add(cancelButton);
+        nextButton = new Button("Next");
+        nextButton.setOnAction(actionEvent -> {
             if (getDialogPage().getValidation() != null) {
                 CustomValidation validation = getDialogPage().getValidation();
                 CustomValidation.ValidationResult validationResult = validation.validate();
@@ -97,13 +105,14 @@ public abstract class Dialog implements AbstractDialog {
             }
             nextPage();
         });
-        button.setText(getCurrentPageId() == getPageList().size() - 1 ? "Exit" : "Next");
-        button.setDisable(true);
+        nextButton.setText(getCurrentPageId() == getPageList().size() - 1 ? "Exit" : "Next");
+        nextButton.setDisable(true);
+        ButtonBar.setButtonData(nextButton, ButtonBar.ButtonData.NEXT_FORWARD);
 
         for (DialogPage dialogPage : pageList) {
-            dialogPage.getContents().setOnMouseMoved(event -> button.setDisable(!dialogPage.validateContents()));
+            dialogPage.getContents().setOnMouseMoved(event -> nextButton.setDisable(!dialogPage.validateContents()));
         }
-        hBox.getChildren().addAll(label, button);
+        hBox.getButtons().addAll(label, nextButton);
         borderPane.bottomProperty().setValue(hBox);
 
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());

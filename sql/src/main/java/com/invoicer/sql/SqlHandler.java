@@ -33,6 +33,7 @@ public class SqlHandler {
         hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        hikariConfig.addDataSourceProperty("leakDetectionThreshold", "100");
         hikariDataSource = new HikariDataSource(hikariConfig);
     }
 

@@ -1,12 +1,7 @@
 package com.invoicer.sql;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +30,7 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     public void init() {
-        try {
+        try (Connection connection = sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()) {
             StringBuilder structure = new StringBuilder("(id int NOT NULL,");
             StringBuilder foreignKey = new StringBuilder();
             for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
@@ -48,7 +43,6 @@ public class SqlTable<T extends StoreableObject> {
             structure.append("PRIMARY KEY (id),");
             structure.append(foreignKey);
             structure.setCharAt(structure.length() - 1, ')');
-            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS " + getTableName() + " " + structure + "");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,8 +50,7 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     public T getObject(int id) {
-        try {
-            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
+        try (Connection connection = sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()){
             ResultSet rs = statement.executeQuery("SELECT * FROM " + getTableName() + " WHERE id=" + id);
             rs.next();
             if (!rs.isLast()) {
@@ -71,8 +64,7 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     public Collection<T> getObjects() {
-        try {
-            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
+        try (Connection connection= sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM " + getTableName());
             HashSet<T> objects = new HashSet<>();
             while (rs.next()) {
@@ -113,7 +105,7 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     public void updateObject(StoreableObject object) {
-        try {
+        try (Connection connection = sqlHandler.getHikariDataSource().getConnection()) {
             StringBuilder parameters = new StringBuilder("(id,");
             StringBuilder values = new StringBuilder("(?,");
             StringBuilder updateValues = new StringBuilder("");
@@ -127,7 +119,7 @@ public class SqlTable<T extends StoreableObject> {
             parameters.setCharAt(parameters.length() - 1, ')');
             values.setCharAt(values.length() - 1, ')');
             updateValues.setCharAt(updateValues.length() - 1, ' ');
-            PreparedStatement statement = sqlHandler.getHikariDataSource().getConnection().prepareStatement(
+            PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO " + getTableName() + " " + parameters + " VALUES " + values + " ON DUPLICATE KEY UPDATE " + updateValues);
             statement.setInt(1, object.getId());
             int i = 2;
@@ -145,8 +137,7 @@ public class SqlTable<T extends StoreableObject> {
     }
 
     public void deleteObject(StoreableObject storeableObject) {
-        try {
-            Statement statement = sqlHandler.getHikariDataSource().getConnection().createStatement();
+        try (Connection connection = sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()){
             statement.execute("DELETE FROM " + getTableName() + " WHERE id=" + storeableObject.getId());
         } catch (SQLException e) {
             e.printStackTrace();

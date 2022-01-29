@@ -1,18 +1,17 @@
 package com.invoicer.main.data;
 
-import com.invoicer.sql.SqlHandler;
 import com.invoicer.sql.StoreableObject;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DataManager {
 
-    private final HashMap<Class<? extends StoreableObject>, Manager> hashMap;
+    private final LinkedHashMap<Class<? extends StoreableObject>, Manager> hashMap;
 
     public DataManager() {
-        this.hashMap = new HashMap<>();
+        this.hashMap = new LinkedHashMap<>();
     }
 
     public Manager getManager(Class<? extends StoreableObject> clazz) {

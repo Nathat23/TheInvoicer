@@ -1,7 +1,10 @@
 list:
   - type: STRING
     name: "name"
+    human: "Name"
   - type: BOOLEAN
     name: "hourly"
+    human: "Bill Hourly"
   - type: DOUBLE
     name: "rate"
+    human: "Rate"

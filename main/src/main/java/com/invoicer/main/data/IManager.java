@@ -23,4 +23,6 @@ public interface IManager {
 
     Collection<StoreableObject> getModified();
 
+    int getNextId();
+
 }

@@ -1,10 +1,13 @@
 package com.invoicer.main;
 
+import com.invoicer.main.data.DataManager;
+import com.invoicer.main.data.Manager;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.StoreableObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -16,9 +19,11 @@ import java.util.Optional;
 public class StoreableObjectTable<T extends StoreableObject> extends TableView<T> {
 
     private final Collection<T> storeableObjects;
+    private Manager manager;
 
-    public StoreableObjectTable(Collection<T> storeableObjects, boolean showId) {
+    public StoreableObjectTable(Manager manager, Collection<T> storeableObjects, boolean showId) {
         this.storeableObjects = storeableObjects;
+        this.manager = manager;
         init(showId);
     }
 
@@ -49,5 +54,17 @@ public class StoreableObjectTable<T extends StoreableObject> extends TableView<T
         id.setSortType(TableColumn.SortType.ASCENDING);
         getSortOrder().add(id);
         sort();
+        setRowFactory(param -> {
+            TableRow<T> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() != 2) {
+                    return;
+                }
+                GenericModifyDialog modifyDialog = new GenericModifyDialog(manager, row.getItem());
+                modifyDialog.showDialog(true);
+                refresh();
+            });
+            return row;
+        });
     }
 }

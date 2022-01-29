@@ -16,10 +16,7 @@ import com.invoicer.main.data.JobRateManager;
 import com.invoicer.sql.StoreableObject;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableRow;
+import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -28,6 +25,9 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import jfxtras.scene.control.agenda.Agenda;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EditJobDialog extends Dialog {
 
     private Job job;
@@ -35,12 +35,14 @@ public class EditJobDialog extends Dialog {
     private Agenda.Appointment appointment;
     private final DataManager dataManager;
     private boolean newJob;
+    private List<JobItem> jobItem;
 
     public EditJobDialog(DataManager dataManager, Agenda.Appointment appointment, Job job) {
         super("Edit Job", DialogSize.LARGE);
         this.appointment = appointment;
         this.dataManager = dataManager;
         this.job = job;
+        this.jobItem = new ArrayList<>();
     }
 
     @Override
@@ -58,9 +60,8 @@ public class EditJobDialog extends Dialog {
         for (StoreableObject customer : customerManager.getStoreableObjects()) {
             comboBoxElement.getContent().getItems().add((Customer) customer);
         }
-        comboBoxElement.getContent().getSelectionModel().selectedIndexProperty().addListener(observable -> {
-            customer = comboBoxElement.getContent().getSelectionModel().getSelectedItem();
-            job.setCustomerId(customer.getId());
+        comboBoxElement.getContent().getSelectionModel().selectedItemProperty().addListener((observableValue, customer1, t1) -> {
+            job.setCustomerId(t1.getId());
         });
         dialogPage.addElement(comboBoxElement);
         StringTextFieldElement nameElement = new StringTextFieldElement("Name");
@@ -131,8 +132,9 @@ public class EditJobDialog extends Dialog {
                             }
                         };
                         listCell.setOnMouseClicked(event -> {
-                            EditJobItemDialog editJobItemDialog = new EditJobItemDialog(dataManager, listCell.getItem());
+                            EditJobItemDialog editJobItemDialog = new EditJobItemDialog(dataManager, job, listCell.getItem());
                             editJobItemDialog.showDialog(true);
+                            jobItemListView.refresh();
                         });
                         return listCell;
                     }
@@ -141,6 +143,14 @@ public class EditJobDialog extends Dialog {
                     jobItemListView.getItems().add(jobItem);
                 }
                 vBox.getChildren().add(jobItemListView);
+                Button addButton = new Button("Add");
+                addButton.setOnMouseClicked(mouseEvent -> {
+                    EditJobItemDialog editJobItemDialog = new EditJobItemDialog(dataManager, job, null);
+                    editJobItemDialog.showDialog(true);
+                    jobItem.add(editJobItemDialog.getJobItem());
+                    jobItemListView.getItems().add(editJobItemDialog.getJobItem());
+                });
+                vBox.getChildren().add(addButton);
                 return vBox;
             }
         };
@@ -150,10 +160,11 @@ public class EditJobDialog extends Dialog {
 
     @Override
     public void onClosure() {
-        if (!newJob) {
-            return;
-        }
         JobManager jobManager = (JobManager) dataManager.getManager(Job.class);
         jobManager.addStoreableObject(job);
+        JobItemManager jobItemManager = (JobItemManager) dataManager.getManager(JobItem.class);
+        for (JobItem jItem : jobItem) {
+            jobItemManager.addStoreableObject(jItem);
+        }
     }
 }

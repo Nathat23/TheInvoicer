@@ -13,6 +13,7 @@ public abstract class Manager implements IManager {
 
     private final HashMap<Integer, StoreableObject> hashSet;
     private final Config config;
+    private int nextId;
 
     public Manager(Config config) {
         this.hashSet = new HashMap<>();
@@ -28,7 +29,7 @@ public abstract class Manager implements IManager {
 
     @Override
     public StoreableObject createObject() {
-        return createObject(hashSet.size());
+        return createObject(getNextId());
     }
 
     @Override
@@ -43,7 +44,17 @@ public abstract class Manager implements IManager {
 
     @Override
     public void addStoreableObject(StoreableObject storeableObject) {
-        hashSet.put(hashSet.size(), storeableObject);
+        hashSet.put(storeableObject.getId(), storeableObject);
+    }
+
+    @Override
+    public int getNextId() {
+        if (nextId == 0) {
+            nextId = hashSet.size();
+            return nextId;
+        }
+        nextId += 1;
+        return nextId;
     }
 
     @Override

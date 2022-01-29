@@ -19,6 +19,9 @@ public class StoredObjectBoxElement<T extends StoreableObject> extends ComboBoxE
         comboBox.setConverter(new StringConverter<T>() {
             @Override
             public String toString(T object) {
+                if (object == null) {
+                    return null;
+                }
                 return generateString(object);
             }
 
