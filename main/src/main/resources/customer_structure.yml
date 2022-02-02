@@ -5,3 +5,23 @@ list:
   - type: STRING
     name: "lastname"
     human: "Lastname"
+  - type: STRING
+    name: "email"
+    human: "E-mail"
+    dataValidation: EMAIL
+  - type: STRING
+    name: "phonenum"
+    human: "Phone Number"
+  - type: STRING
+    name: "address1"
+    human: "Address Line 1"
+  - type: STRING
+    name: "address2"
+    human: "Address Line 2"
+  - type: STRING
+    name: "address3"
+    human: "Address Line 3"
+  - type: STRING
+    name: "postcode"
+    human: "Postal Code"
+    dataValidation: POSTCODE

@@ -3,6 +3,7 @@ package com.invoicer.sql;
 public class AttributeConfig {
 
     private DataType type;
+    private DataValidation dataValidation;
     private String name;
     private String human;
     private String foreignKeyTable;
@@ -22,6 +23,10 @@ public class AttributeConfig {
 
     public String getHuman() {
         return human;
+    }
+
+    public DataValidation getDataValidation() {
+        return dataValidation;
     }
 
     public void setHuman(String human) {
@@ -50,5 +55,9 @@ public class AttributeConfig {
 
     public void setForeignKeyTable(String foreignKeyTable) {
         this.foreignKeyTable = foreignKeyTable;
+    }
+
+    public void setDataValidation(DataValidation dataValidation) {
+        this.dataValidation = dataValidation;
     }
 }
