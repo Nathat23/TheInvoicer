@@ -147,6 +147,9 @@ public class EditJobDialog extends Dialog {
                 addButton.setOnMouseClicked(mouseEvent -> {
                     EditJobItemDialog editJobItemDialog = new EditJobItemDialog(dataManager, job, null);
                     editJobItemDialog.showDialog(true);
+                    if (!editJobItemDialog.isNaturalClosure()) {
+                        return;
+                    }
                     jobItem.add(editJobItemDialog.getJobItem());
                     jobItemListView.getItems().add(editJobItemDialog.getJobItem());
                 });

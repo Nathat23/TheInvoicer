@@ -30,6 +30,7 @@ public abstract class Dialog implements AbstractDialog {
     private VBox progressBox;
     private Button nextButton;
     private Button cancelButton;
+    private boolean naturalClosure;
 
     public Dialog(String name, DialogSize dialogSize) {
         this.name = name;
@@ -102,6 +103,7 @@ public abstract class Dialog implements AbstractDialog {
             if (currentPage == getPageList().size() - 1) {
                 onClosure();
                 stage.close();
+                naturalClosure = true;
             }
             nextPage();
         });
@@ -118,7 +120,6 @@ public abstract class Dialog implements AbstractDialog {
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());
         scene.getStylesheets().add("dialog.css");
         stage.setScene(scene);
-        scene.getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event -> onClosure());
         if (wait) {
             stage.showAndWait();
             return;
@@ -175,6 +176,10 @@ public abstract class Dialog implements AbstractDialog {
             return;
         }
         progressBox.getChildren().set(0, gridPane);
+    }
+
+    public boolean isNaturalClosure() {
+        return naturalClosure;
     }
 
     public enum DialogSize {

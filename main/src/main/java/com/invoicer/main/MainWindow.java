@@ -151,7 +151,7 @@ public class MainWindow extends Application {
                     //Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
                     EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, null);
                     editJobDialog.showDialog(true);
-                    return ButtonBar.ButtonData.OK_DONE;
+                    return editJobDialog.isNaturalClosure() ? ButtonBar.ButtonData.OK_DONE : ButtonBar.ButtonData.CANCEL_CLOSE;
                 });
 
                 calendarAgenda.setEditAppointmentCallback(param -> {
