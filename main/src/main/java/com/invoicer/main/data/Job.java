@@ -5,14 +5,11 @@ import com.invoicer.sql.Config;
 import com.invoicer.sql.DateTimeAttribute;
 import com.invoicer.sql.IntAttribute;
 import com.invoicer.sql.StoreableObject;
-import com.invoicer.sql.StoreableObjectData;
 import com.invoicer.sql.StringAttribute;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
-@StoreableObjectData(tableName = "jobs")
 public class Job extends StoreableObject {
 
     public Job(int id, Config config) {

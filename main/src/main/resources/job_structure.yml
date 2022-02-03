@@ -1,3 +1,4 @@
+tableName: "jobs"
 list:
   - type: INTEGER
     name: "customer_id"

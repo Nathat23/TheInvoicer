@@ -5,6 +5,7 @@ import java.util.List;
 
 public class StoredObjectConfig {
 
+    private String tableName;
     private List<AttributeConfig> list;
 
     public List<AttributeConfig> getList() {
@@ -38,5 +39,13 @@ public class StoredObjectConfig {
             throw new UnsupportedOperationException("I don't know how to handle " + attribute.getType());
         }
         return attributes;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

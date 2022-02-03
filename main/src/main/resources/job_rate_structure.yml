@@ -1,3 +1,4 @@
+tableName: "job_rates"
 list:
   - type: STRING
     name: "name"

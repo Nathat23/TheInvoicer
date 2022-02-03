@@ -23,8 +23,7 @@ public class SqlTable<T extends StoreableObject> {
 
     public String getTableName() {
         if (tableName == null) {
-            StoreableObjectData storeableObjectData = objectClass.getAnnotation(StoreableObjectData.class);
-            tableName = storeableObjectData.tableName();
+            tableName = config.getStoredObjectConfig().getTableName();
         }
         return tableName;
     }
