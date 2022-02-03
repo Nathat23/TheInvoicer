@@ -1,9 +1,9 @@
 package com.invoicer.main;
 
-import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.Manager;
+import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.Attribute;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.AttributeGroup;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableColumn;
@@ -11,17 +11,15 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
-public class StoreableObjectTable<T extends StoreableObject> extends TableView<T> {
+public class StoredObjectTable<T extends StoredObject> extends TableView<T> {
 
     private final Collection<T> storeableObjects;
     private Manager manager;
 
-    public StoreableObjectTable(Manager manager, Collection<T> storeableObjects, boolean showId) {
+    public StoredObjectTable(Manager manager, Collection<T> storeableObjects, boolean showId) {
         this.storeableObjects = storeableObjects;
         this.manager = manager;
         init(showId);
@@ -38,10 +36,10 @@ public class StoreableObjectTable<T extends StoreableObject> extends TableView<T
         if (showId) {
             getColumns().add(id);
         }
-        for (Attribute attribute : object.getAttributes()) {
+        for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
             TableColumn<T, String> column = new TableColumn<>(attribute.getAttributeConfig().getHuman() + ": ");
             column.setCellValueFactory(as -> {
-                for (Attribute attribute2 : as.getValue().getAttributes()) {
+                for (Attribute attribute2 : as.getValue().getAttributeGroup().getAttributes()) {
                     if (attribute.getName().equals(attribute2.getName())) {
                         return new SimpleStringProperty(String.valueOf(attribute2.getValue()));
                     }

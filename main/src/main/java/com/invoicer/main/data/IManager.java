@@ -1,27 +1,24 @@
 package com.invoicer.main.data;
 
-import com.invoicer.sql.Attribute;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.AttributeGroup;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 public interface IManager {
 
-    StoreableObject createObject(int id);
+    StoredObject createObject(AttributeGroup attributeGroup);
 
-    StoreableObject createObject();
+    StoredObject createObject();
 
-    StoreableObject createAndStore();
+    StoredObject createAndStore();
 
-    Collection<StoreableObject> getStoreableObjects();
+    Collection<StoredObject> getStoredObjects();
 
-    StoreableObject getStoreableObject(int id);
+    StoredObject getStoredObject(int id);
 
-    void addStoreableObject(StoreableObject storeableObject);
+    void addStoredObject(StoredObject storedObject);
 
-    Collection<StoreableObject> getModified();
+    Collection<StoredObject> getModified();
 
     int getNextId();
 

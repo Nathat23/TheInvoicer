@@ -6,19 +6,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class SqlTable<T extends StoreableObject> {
+public class SqlTable {
 
-    private final Class<T> objectClass;
     private String tableName;
     private final SqlHandler sqlHandler;
     private final Config config;
 
-    public SqlTable (SqlHandler sqlHandler, Config config, Class<T> objectClass) {
+    public SqlTable (SqlHandler sqlHandler, Config config) {
         this.config = config;
         this.sqlHandler = sqlHandler;
-        this.objectClass = objectClass;
     }
 
     public String getTableName() {
@@ -48,7 +45,7 @@ public class SqlTable<T extends StoreableObject> {
         }
     }
 
-    public T getObject(int id) {
+    public AttributeGroup getObject(int id) {
         try (Connection connection = sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()){
             ResultSet rs = statement.executeQuery("SELECT * FROM " + getTableName() + " WHERE id=" + id);
             rs.next();
@@ -56,34 +53,34 @@ public class SqlTable<T extends StoreableObject> {
                 throw new UnsupportedOperationException("Multiple rows with same id!!!");
             }
             return processResultSet(rs);
-        } catch (SQLException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Collection<T> getObjects() {
+    public Collection<AttributeGroup> getObjects() {
         try (Connection connection= sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT * FROM " + getTableName());
-            HashSet<T> objects = new HashSet<>();
+            HashSet<AttributeGroup> objects = new HashSet<>();
             while (rs.next()) {
                 objects.add(processResultSet(rs));
             }
             return objects;
-        } catch (SQLException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private T processResultSet(ResultSet resultSet) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+    private AttributeGroup processResultSet(ResultSet resultSet) throws SQLException {
         List<Attribute> set = new ArrayList<>();
         int i = 2;
         for (AttributeConfig attributeConfig : config.getStoredObjectConfig().getList()) {
             set.add(getAttribute(attributeConfig, resultSet, i));
             i++;
         }
-        return objectClass.getConstructor(int.class, Config.class, List.class).newInstance(resultSet.getInt(1), config, set);
+        return new AttributeGroup(resultSet.getInt(1), config, set);
     }
 
     private Attribute getAttribute(AttributeConfig config, ResultSet resultSet, int columnId) throws SQLException {
@@ -103,7 +100,7 @@ public class SqlTable<T extends StoreableObject> {
         throw new UnsupportedOperationException("SQL data type not currently supported! (" + resultSetMetaData.getColumnTypeName(columnId) + ")");
     }
 
-    public void updateObject(StoreableObject object) {
+    public void updateObject(AttributeGroup object) {
         try (Connection connection = sqlHandler.getHikariDataSource().getConnection()) {
             StringBuilder parameters = new StringBuilder("(id,");
             StringBuilder values = new StringBuilder("(?,");
@@ -135,9 +132,9 @@ public class SqlTable<T extends StoreableObject> {
         }
     }
 
-    public void deleteObject(StoreableObject storeableObject) {
+    public void deleteObject(AttributeGroup attributeGroup) {
         try (Connection connection = sqlHandler.getHikariDataSource().getConnection(); Statement statement = connection.createStatement()){
-            statement.execute("DELETE FROM " + getTableName() + " WHERE id=" + storeableObject.getId());
+            statement.execute("DELETE FROM " + getTableName() + " WHERE id=" + attributeGroup.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }

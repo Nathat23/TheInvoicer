@@ -41,7 +41,7 @@ public class EditJobItemDialog extends Dialog {
         });
         dialogPage.addElement(description);
         StoredObjectBoxElement<JobRate> boxElement = new StoredObjectBoxElement<>("Rate");
-        jobRateManager.getStoreableObjects().forEach(object -> boxElement.addItem((JobRate) object));
+        jobRateManager.getStoredObjects().forEach(object -> boxElement.addItem((JobRate) object));
         dialogPage.addElement(boxElement);
         boxElement.getContent().valueProperty().addListener((observableValue, jobRate, t1) -> {
             if (jobRate == null) {
@@ -58,7 +58,7 @@ public class EditJobItemDialog extends Dialog {
         });
         dialogPage.addElement(units);
         if (!newItem) {
-            boxElement.getContent().getSelectionModel().select((JobRate) jobRateManager.getStoreableObject(jobItem.getRateId()));
+            boxElement.getContent().getSelectionModel().select((JobRate) jobRateManager.getStoredObject(jobItem.getRateId()));
             description.getContent().setText(jobItem.getDescription());
             name.getContent().setText(jobItem.getName());
             units.getContent().setText(jobItem.getUnits() + "");

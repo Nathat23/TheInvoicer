@@ -2,17 +2,13 @@ package com.invoicer.main;
 
 import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
-import com.invoicer.main.data.Job;
-import com.invoicer.main.data.JobManager;
-import com.invoicer.main.data.Customer;
-import com.invoicer.main.data.CustomerManager;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.main.data.*;
+import com.invoicer.sql.AttributeGroup;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -121,8 +117,8 @@ public class MainWindow extends Application {
                 calendarAgenda.setNewAppointmentDrawnCallback(param -> ButtonBar.ButtonData.OK_DONE);
 
                 LocalTime earliestTime = LocalTime.of(9, 0);
-                for (StoreableObject storeableObject : jobManager.getStoreableObjects()) {
-                    Job job = (Job) storeableObject;
+                for (StoredObject attributeGroup : jobManager.getStoredObjects()) {
+                    Job job = (Job) attributeGroup;
                     Agenda.Appointment appointment = new Agenda.AppointmentImplLocal();
                     appointment.setStartLocalDateTime(job.getStartDateTime());
                     appointment.setEndLocalDateTime(job.getEndDateTime());
@@ -156,7 +152,7 @@ public class MainWindow extends Application {
 
                 calendarAgenda.setEditAppointmentCallback(param -> {
                     Job job= null;
-                    for (StoreableObject object : jobManager.getStoreableObjects()) {
+                    for (StoredObject object : jobManager.getStoredObjects()) {
                         Job tJob = (Job) object;
                         if (tJob.getName().equals(param.getSummary())) {
                             job = (Job) object;
@@ -193,7 +189,7 @@ public class MainWindow extends Application {
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                StoreableObjectViewer<Customer> table = new StoreableObjectViewer<>(theInvoicer.getDataManager(), customerManager.getStoreableObjects(), Customer.class);
+                StoredObjectViewer table = new StoredObjectViewer(theInvoicer.getDataManager(), customerManager.getStoredObjects(), Customer.class);
                 addElement(table.getContent());
             }
         });

@@ -1,21 +1,20 @@
 package com.invoicer.sql;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class StoreableObject implements AbstractStorableObject {
+public class AttributeGroup implements IAttributeGroup {
 
     private final int id;
     private List<Attribute> attributes;
     private final Config config;
 
-    public StoreableObject(int id, Config config) {
+    public AttributeGroup(int id, Config config) {
         this.id = id;
         this.config = config;
     }
 
-    public StoreableObject(int id, Config config, List<Attribute> attributes) {
+    public AttributeGroup(int id, Config config, List<Attribute> attributes) {
         this(id, config);
         this.attributes = attributes;
     }

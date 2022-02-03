@@ -1,17 +1,16 @@
 package com.invoicer.main.data;
 
+import com.invoicer.sql.AttributeGroup;
 import com.invoicer.sql.Config;
-import com.invoicer.sql.StoreableObject;
 
 public class CustomerManager extends Manager {
 
-
-    public CustomerManager(Config config) {
-        super(config);
+    public CustomerManager(DataManager dataManager, Config config) {
+        super(dataManager, config);
     }
 
     @Override
-    public StoreableObject createObject(int id) {
-        return new Customer(id, getConfig());
+    public StoredObject createObject(AttributeGroup attributeGroup) {
+        return new Customer(getDataManager(), attributeGroup);
     }
 }

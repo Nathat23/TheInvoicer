@@ -3,7 +3,7 @@ package com.invoicer.sql;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StoredObjectConfig {
+public class AttributeGroupConfig {
 
     private String tableName;
     private List<AttributeConfig> list;

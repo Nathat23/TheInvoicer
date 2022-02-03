@@ -4,16 +4,7 @@ import com.invoicer.gui.Dialog;
 import com.invoicer.gui.DialogPage;
 import com.invoicer.gui.StringTextFieldElement;
 import com.invoicer.gui.WideDialogElement;
-import com.invoicer.main.data.Customer;
-import com.invoicer.main.data.CustomerManager;
-import com.invoicer.main.data.DataManager;
-import com.invoicer.main.data.Job;
-import com.invoicer.main.data.JobItem;
-import com.invoicer.main.data.JobItemManager;
-import com.invoicer.main.data.JobManager;
-import com.invoicer.main.data.JobRate;
-import com.invoicer.main.data.JobRateManager;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.main.data.*;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -32,10 +23,10 @@ public class EditJobDialog extends Dialog {
 
     private Job job;
     private Customer customer;
-    private Agenda.Appointment appointment;
+    private final Agenda.Appointment appointment;
     private final DataManager dataManager;
     private boolean newJob;
-    private List<JobItem> jobItem;
+    private final List<JobItem> jobItem;
 
     public EditJobDialog(DataManager dataManager, Agenda.Appointment appointment, Job job) {
         super("Edit Job", DialogSize.LARGE);
@@ -57,7 +48,7 @@ public class EditJobDialog extends Dialog {
         }
         DialogPage dialogPage = new DialogPage("Editing Job");
         StoredObjectBoxElement<Customer> comboBoxElement = new StoredObjectBoxElement<>("Customer");
-        for (StoreableObject customer : customerManager.getStoreableObjects()) {
+        for (StoredObject customer : customerManager.getStoredObjects()) {
             comboBoxElement.getContent().getItems().add((Customer) customer);
         }
         comboBoxElement.getContent().getSelectionModel().selectedItemProperty().addListener((observableValue, customer1, t1) -> {
@@ -77,12 +68,10 @@ public class EditJobDialog extends Dialog {
         });
         dialogPage.addElement(description);
         if (!newJob) {
-            comboBoxElement.getContent().getSelectionModel().select((Customer) customerManager.getStoreableObject(job.getCustomerId()));
+            comboBoxElement.getContent().getSelectionModel().select((Customer) customerManager.getStoredObject(job.getCustomerId()));
             nameElement.getContent().setText(job.getName());
             description.getContent().setText(job.getDescription());
         }
-        JobItemManager jobItemManager = (JobItemManager) dataManager.getManager(JobItem.class);
-        JobRateManager jobRateManager = (JobRateManager) dataManager.getManager(JobRate.class);
         WideDialogElement wideDialogElement = new WideDialogElement("Item"){
             VBox vBox;
 
@@ -124,7 +113,7 @@ public class EditJobDialog extends Dialog {
                                 Label desc = new Label(jobItem.getDescription());
                                 name.getChildren().addAll(nameLabel, desc);
                                 Label units = new Label(jobItem.getUnits() + "");
-                                JobRate rate = (JobRate) jobRateManager.getStoreableObject(jobItem.getRateId());
+                                JobRate rate = jobItem.getJobRate();
                                 Label rateLabel = new Label(rate.getRate() + "");
                                 gridPane.addRow(0, name, units, rateLabel);
                                 gridPane.getColumnConstraints().addAll(guide.getColumnConstraints());
@@ -139,7 +128,7 @@ public class EditJobDialog extends Dialog {
                         return listCell;
                     }
                 });
-                for (JobItem jobItem : jobItemManager.findItemsForJob(job)) {
+                for (JobItem jobItem : job.getJobItems()) {
                     jobItemListView.getItems().add(jobItem);
                 }
                 vBox.getChildren().add(jobItemListView);
@@ -164,10 +153,10 @@ public class EditJobDialog extends Dialog {
     @Override
     public void onClosure() {
         JobManager jobManager = (JobManager) dataManager.getManager(Job.class);
-        jobManager.addStoreableObject(job);
+        jobManager.addStoredObject(job);
         JobItemManager jobItemManager = (JobItemManager) dataManager.getManager(JobItem.class);
         for (JobItem jItem : jobItem) {
-            jobItemManager.addStoreableObject(jItem);
+            jobItemManager.addStoredObject(jItem);
         }
     }
 }

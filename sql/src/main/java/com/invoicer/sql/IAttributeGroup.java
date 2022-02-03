@@ -1,9 +1,8 @@
 package com.invoicer.sql;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface AbstractStorableObject {
+public interface IAttributeGroup {
 
     int getId();
 

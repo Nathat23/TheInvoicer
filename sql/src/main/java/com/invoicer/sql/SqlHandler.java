@@ -15,13 +15,11 @@ public class SqlHandler {
     private final String username;
     private final String password;
     private HikariDataSource hikariDataSource;
-    private final Set<SqlTable<?>> tables;
 
     public SqlHandler(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.tables = new HashSet<>();
     }
 
     public void initialise() {

@@ -1,8 +1,7 @@
 package com.invoicer.main.data;
 
-import com.invoicer.sql.Attribute;
 import com.invoicer.sql.Config;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.AttributeGroup;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,40 +10,41 @@ import java.util.Set;
 
 public abstract class Manager implements IManager {
 
-    private final HashMap<Integer, StoreableObject> hashSet;
+    private final HashMap<Integer, StoredObject> hashSet;
     private final Config config;
+    private final DataManager dataManager;
     private int nextId;
 
-    public Manager(Config config) {
+    public Manager(DataManager dataManager, Config config) {
         this.hashSet = new HashMap<>();
         this.config = config;
+        this.dataManager = dataManager;
     }
 
     @Override
-    public StoreableObject createAndStore() {
-        StoreableObject storeableObject = createObject();
-        addStoreableObject(storeableObject);
-        return storeableObject;
+    public StoredObject createAndStore() {
+        StoredObject attributeGroup = createObject();
+        addStoredObject(attributeGroup);
+        return attributeGroup;
+    }
+    @Override
+    public StoredObject createObject() {
+        return createObject(new AttributeGroup(getNextId(), getConfig()));
     }
 
     @Override
-    public StoreableObject createObject() {
-        return createObject(getNextId());
-    }
-
-    @Override
-    public Collection<StoreableObject> getStoreableObjects() {
+    public Collection<StoredObject> getStoredObjects() {
         return hashSet.values();
     }
 
     @Override
-    public StoreableObject getStoreableObject(int id) {
+    public StoredObject getStoredObject(int id) {
         return hashSet.get(id);
     }
 
     @Override
-    public void addStoreableObject(StoreableObject storeableObject) {
-        hashSet.put(storeableObject.getId(), storeableObject);
+    public void addStoredObject(StoredObject storedObject) {
+        hashSet.put(storedObject.getId(), storedObject);
     }
 
     @Override
@@ -58,21 +58,22 @@ public abstract class Manager implements IManager {
     }
 
     @Override
-    public Collection<StoreableObject> getModified() {
-        Set<StoreableObject> objects = new HashSet<>();
-        for (StoreableObject stored : getStoreableObjects()) {
-            for (Attribute attribute : stored.getAttributes()) {
-                if (!attribute.isModified()) {
-                    continue;
-                }
-                objects.add(stored);
-                break;
+    public Collection<StoredObject> getModified() {
+        Set<StoredObject> objects = new HashSet<>();
+        for (StoredObject stored : getStoredObjects()) {
+            if (!stored.isModified()) {
+                continue;
             }
+            objects.add(stored);
         }
         return objects;
     }
 
     public Config getConfig() {
         return config;
+    }
+
+    DataManager getDataManager() {
+        return dataManager;
     }
 }

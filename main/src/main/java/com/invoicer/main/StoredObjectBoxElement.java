@@ -1,12 +1,13 @@
 package com.invoicer.main;
 
 import com.invoicer.gui.ComboBoxElement;
+import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.Attribute;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.AttributeGroup;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 
-public class StoredObjectBoxElement<T extends StoreableObject> extends ComboBoxElement<T> {
+public class StoredObjectBoxElement<T extends StoredObject> extends ComboBoxElement<T> {
 
     public StoredObjectBoxElement(String name) {
         super(name);
@@ -33,10 +34,10 @@ public class StoredObjectBoxElement<T extends StoreableObject> extends ComboBoxE
         return comboBox;
     }
 
-    private String generateString(StoreableObject object) {
+    private String generateString(StoredObject object) {
         StringBuilder builder = new StringBuilder();
         builder.append("ID: ").append(object.getId()).append(" (");
-        for (Attribute attribute : object.getAttributes()) {
+        for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
             builder.append(attribute.getValue()).append(",");
         }
         builder.setCharAt(builder.length() - 1, ')');

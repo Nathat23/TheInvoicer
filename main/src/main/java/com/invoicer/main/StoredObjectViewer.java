@@ -3,7 +3,8 @@ package com.invoicer.main;
 import com.invoicer.gui.WideDialogElement;
 import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.Manager;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.main.data.StoredObject;
+import com.invoicer.sql.AttributeGroup;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -11,14 +12,14 @@ import jfxtras.scene.layout.VBox;
 
 import java.util.Collection;
 
-public class StoreableObjectViewer<T extends StoreableObject> extends WideDialogElement {
+public class StoredObjectViewer extends WideDialogElement {
 
     private VBox vBox;
-    private Collection<StoreableObject> collection;
-    private Class<T> clazz;
-    private DataManager dataManager;
+    private final Collection<StoredObject> collection;
+    private final Class<? extends StoredObject> clazz;
+    private final DataManager dataManager;
 
-    public StoreableObjectViewer(DataManager dataManager, Collection<StoreableObject> collection, Class<T> clazz) {
+    public StoredObjectViewer(DataManager dataManager, Collection<StoredObject> collection, Class<? extends StoredObject> clazz) {
         super("");
         this.collection = collection;
         this.dataManager = dataManager;
@@ -36,29 +37,29 @@ public class StoreableObjectViewer<T extends StoreableObject> extends WideDialog
     @Override
     public VBox createElement() {
         VBox vBox = new VBox();
-        StoreableObjectTable<StoreableObject> storeableObjectTable = new StoreableObjectTable<>(dataManager.getManager(clazz), collection, true);
+        StoredObjectTable<StoredObject> storedObjectTable = new StoredObjectTable<>(dataManager.getManager(clazz), collection, true);
         ButtonBar buttonBar = new ButtonBar();
         Button add = new Button("Add");
         add.setOnMouseClicked(mouseEvent -> {
             Manager manager = dataManager.getManager(clazz);
             GenericModifyDialog genericModifyDialog = new GenericModifyDialog(manager, null);
             genericModifyDialog.showDialog(true);
-            storeableObjectTable.getItems().add(genericModifyDialog.getObject());
+            storedObjectTable.getItems().add(genericModifyDialog.getObject());
         });
         buttonBar.getButtons().add(add);
         Button modify = new Button("Modify");
         modify.setOnMouseClicked(event -> {
-            StoreableObject selected = storeableObjectTable.getSelectionModel().getSelectedItem();
+            StoredObject selected = storedObjectTable.getSelectionModel().getSelectedItem();
             Manager manager = dataManager.getManager(clazz);
             if (selected == null) {
                 return;
             }
             GenericModifyDialog genericModifyDialog = new GenericModifyDialog(manager, selected);
             genericModifyDialog.showDialog(true);
-            storeableObjectTable.refresh();
+            storedObjectTable.refresh();
         });
         buttonBar.getButtons().add(modify);
-        vBox.getChildren().addAll(buttonBar, storeableObjectTable);
+        vBox.getChildren().addAll(buttonBar, storedObjectTable);
         return vBox;
     }
 }

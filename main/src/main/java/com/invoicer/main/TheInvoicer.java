@@ -24,13 +24,13 @@ public class TheInvoicer {
     public void init() {
         dataManager = new DataManager();
         InputStream inputStream = TheInvoicer.class.getResourceAsStream("/customer_structure.yml");
-        dataManager.addManager(Customer.class, new CustomerManager(new Config(inputStream)));
+        dataManager.addManager(Customer.class, new CustomerManager(dataManager, new Config(inputStream)));
         InputStream inputStream2 = TheInvoicer.class.getResourceAsStream("/job_structure.yml");
-        dataManager.addManager(Job.class, new JobManager(new Config(inputStream2)));
+        dataManager.addManager(Job.class, new JobManager(dataManager, new Config(inputStream2)));
         InputStream inputStream4 = TheInvoicer.class.getResourceAsStream("/job_rate_structure.yml");
-        dataManager.addManager(JobRate.class, new JobRateManager(new Config(inputStream4)));
+        dataManager.addManager(JobRate.class, new JobRateManager(dataManager, new Config(inputStream4)));
         InputStream inputStream3 = TheInvoicer.class.getResourceAsStream("/job_item_structure.yml");
-        dataManager.addManager(JobItem.class, new JobItemManager(new Config(inputStream3)));
+        dataManager.addManager(JobItem.class, new JobItemManager(dataManager, new Config(inputStream3)));
 
         SqlHandler sqlHandler = new SqlHandler("jdbc:mariadb://localhost:3306/invoicer", "new_user" , "new_password");
         sqlHandler.initialise();
@@ -44,16 +44,16 @@ public class TheInvoicer {
 
         CustomerManager customerManager = (CustomerManager) theInvoicer.dataManager.getManager(Customer.class);
         Customer customer = (Customer) customerManager.createAndStore();
-        for (Attribute attribute : customer.getAttributes()) {
+        for (Attribute attribute : customer.getAttributeGroup().getAttributes()) {
             if (attribute != null) {
                 attribute.setValue("sda");
             }
         }
         JobRateManager jobRateManager = (JobRateManager) theInvoicer.dataManager.getManager(JobRate.class);
         JobRate jobRate = (JobRate) jobRateManager.createAndStore();
-        jobRate.getAttributes().get(0).setValue("SingleTimeRate");
-        jobRate.getAttributes().get(1).setValue(true);
-        jobRate.getAttributes().get(2).setValue(1.23);
+        jobRate.getAttributeGroup().getAttributes().get(0).setValue("SingleTimeRate");
+        jobRate.getAttributeGroup().getAttributes().get(1).setValue(true);
+        jobRate.getAttributeGroup().getAttributes().get(2).setValue(1.23);
 
         theInvoicer.storageManager.commitChanges();
 

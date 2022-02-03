@@ -8,14 +8,14 @@ import java.io.InputStream;
 public class Config {
 
     private final Yaml yaml;
-    private final StoredObjectConfig storedObjectConfig;
+    private final AttributeGroupConfig attributeGroupConfig;
 
     public Config(InputStream file) {
-        yaml = new Yaml(new Constructor(StoredObjectConfig.class));
-        storedObjectConfig = yaml.load(file);
+        yaml = new Yaml(new Constructor(AttributeGroupConfig.class));
+        attributeGroupConfig = yaml.load(file);
     }
 
-    public StoredObjectConfig getStoredObjectConfig() {
-        return storedObjectConfig;
+    public AttributeGroupConfig getStoredObjectConfig() {
+        return attributeGroupConfig;
     }
 }

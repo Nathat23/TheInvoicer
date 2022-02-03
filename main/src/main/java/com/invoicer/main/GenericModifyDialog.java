@@ -2,18 +2,19 @@ package com.invoicer.main;
 
 import com.invoicer.gui.*;
 import com.invoicer.main.data.Manager;
+import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.BooleanAttribute;
-import com.invoicer.sql.StoreableObject;
+import com.invoicer.sql.AttributeGroup;
 
 public class GenericModifyDialog extends Dialog {
 
-    private StoreableObject object;
+    private StoredObject object;
     private final Manager manager;
     private DialogPage dialogPage;
     private boolean newObject;
 
-    public GenericModifyDialog(Manager manager, StoreableObject object) {
+    public GenericModifyDialog(Manager manager, StoredObject object) {
         super("Modify ", DialogSize.MEDIUM);
         this.object = object;
         this.manager = manager;
@@ -26,7 +27,7 @@ public class GenericModifyDialog extends Dialog {
             newObject = true;
         }
         dialogPage = new DialogPage("Modify");
-        for (Attribute attribute : object.getAttributes()) {
+        for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
             EditableElement dialogElement;
             switch (attribute.getAttributeConfig().getType()) {
                 case STRING:
@@ -58,7 +59,7 @@ public class GenericModifyDialog extends Dialog {
     @Override
     public void onClosure() {
         for (DialogElement dialogElement : dialogPage.getElementList()) {
-            for (Attribute attribute : object.getAttributes()) {
+            for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
                 if (!attribute.getAttributeConfig().getHuman().equals(dialogElement.getName())) {
                     continue;
                 }
@@ -72,11 +73,11 @@ public class GenericModifyDialog extends Dialog {
             }
         }
         if (newObject) {
-            manager.addStoreableObject(object);
+            manager.addStoredObject(object);
         }
     }
 
-    public StoreableObject getObject() {
+    public StoredObject getObject() {
         return object;
     }
 }
