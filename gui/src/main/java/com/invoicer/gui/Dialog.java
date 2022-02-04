@@ -185,7 +185,8 @@ public abstract class Dialog implements AbstractDialog {
     public enum DialogSize {
         SMALL(500, 300),
         MEDIUM(500, 400),
-        LARGE(700, 400);
+        LARGE(700, 400),
+        LONG(700, 600);
 
         int width;
         int height;

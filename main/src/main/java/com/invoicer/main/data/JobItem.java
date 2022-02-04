@@ -4,7 +4,12 @@ import com.invoicer.sql.IntAttribute;
 import com.invoicer.sql.AttributeGroup;
 import com.invoicer.sql.StringAttribute;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class JobItem extends StoredObject {
+
+    private Job job;
 
     public JobItem(DataManager dataManager, AttributeGroup attributeGroup) {
         super(dataManager, attributeGroup);
@@ -57,5 +62,30 @@ public class JobItem extends StoredObject {
             }
         }
         return null;
+    }
+
+    public Job getJob() {
+        if (job == null) {
+            for (StoredObject storedObject : getDataManager().getManager(Job.class).getStoredObjects()) {
+                if (storedObject.getId() == getJobId()) {
+                    job = (Job) storedObject;
+                }
+            }
+        }
+        return job;
+    }
+
+    public double calculateCost() {
+        double cost = getJobRate().getRate() * getUnits();
+        if (!getJobRate().isHourly()) {
+            return cost;
+        }
+        LocalDateTime start = getJob().getStartDateTime();
+        LocalDateTime end = getJob().getEndDateTime();
+        Duration duration = Duration.between(start.toLocalTime(), end.toLocalTime());
+        double hours = duration.toHours();
+        double quarts = duration.toMinutesPart() % 15;
+        double totalTime = hours + quarts;
+        return totalTime * getJobRate().getRate();
     }
 }

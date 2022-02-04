@@ -175,6 +175,22 @@ public class MainWindow extends Application {
                     calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().plusWeeks(1));
                 });
                 buttons.getChildren().add(right);
+                Button createInvoice = new Button("Create");
+                createInvoice.setOnMouseClicked(a -> {
+                    Agenda.Appointment selected = calendarAgenda.selectedAppointments().get(0);
+                    Job job= null;
+                    for (StoredObject object : jobManager.getStoredObjects()) {
+                        Job tJob = (Job) object;
+                        if (tJob.getName().equals(selected.getSummary())) {
+                            job = (Job) object;
+                            break;
+                        }
+                    }
+                    Customer customer = job.getCustomer();
+                    CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(customer, job, job.getJobItems());
+                    createInvoiceDialog.showDialog(true);
+                });
+                buttons.getChildren().add(createInvoice);
 
                 addElement(buttons);
                 addElement(calendarAgenda);

@@ -65,4 +65,21 @@ public class Job extends StoredObject {
         }
         return jobItems;
     }
+
+    public Customer getCustomer() {
+        for (StoredObject storedObject : getDataManager().getManager(Customer.class).getStoredObjects()) {
+            if (storedObject.getId() == getCustomerId()) {
+                return (Customer) storedObject;
+            }
+        }
+        throw new UnsupportedOperationException("Couldn't find customer id " + getCustomerId());
+    }
+
+    public double calculateTotalCost() {
+        double cost = 0;
+        for (JobItem jobItem : getJobItems()) {
+            cost += jobItem.calculateCost();
+        }
+        return cost;
+    }
 }

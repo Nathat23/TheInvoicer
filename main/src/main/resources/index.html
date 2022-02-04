@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Invoice</title>
+		<style>
+		@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+			body {
+	background-color: #faffed;
+	font-family: 'Open Sans', sans-serif;
+}
+
+table, th,td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.address {
+	width: 10%;
+	padding: 0px;
+}
+
+.cost {
+	width:10%;
+	padding: 0px;
+	align: right;
+}
+		</style>
+	</head>
+	
+	<body>
+		<div class="address">
+		$address
+		</div>
+		<h1>Invoice</h1>
+		<table style="width:100%">
+			<tr>
+				<th style="width:80%">Item</th>
+				<th style="width:10%">Units</th>
+				<th style="width:10%">Cost</th>
+			</tr>
+			$items
+		</table>
+		<table style="cost">
+			<tr>
+				<th><b>Cost:</b></th>
+				<td>$cost</td>
+			</tr>
+		</table>
+	</body>
+</html>
