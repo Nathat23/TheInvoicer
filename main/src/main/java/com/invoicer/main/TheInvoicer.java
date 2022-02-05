@@ -10,9 +10,13 @@ import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.JobRate;
 import com.invoicer.main.data.JobRateManager;
 import com.invoicer.main.data.StorageManager;
+import com.invoicer.main.email.EmailConfig;
+import com.invoicer.main.email.EmailHandler;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.Config;
 import com.invoicer.sql.SqlHandler;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.InputStream;
 
@@ -20,6 +24,7 @@ public class TheInvoicer {
 
     private DataManager dataManager;
     private StorageManager storageManager;
+    private EmailHandler emailHandler;
 
     public void init() {
         dataManager = new DataManager();
@@ -36,6 +41,11 @@ public class TheInvoicer {
         sqlHandler.initialise();
         storageManager = new StorageManager(sqlHandler, dataManager);
         storageManager.init();
+
+        Yaml yaml = new Yaml(new Constructor(EmailConfig.class));
+        InputStream inputStream1 = TheInvoicer.class.getResourceAsStream("/email_config.yml");
+        emailHandler = new EmailHandler(yaml.load(inputStream1));
+        emailHandler.init();
     }
 
     public static void main(String[] args) {
@@ -66,5 +76,9 @@ public class TheInvoicer {
 
     public StorageManager getStorageManager() {
         return storageManager;
+    }
+
+    public EmailHandler getEmailHandler() {
+        return emailHandler;
     }
 }

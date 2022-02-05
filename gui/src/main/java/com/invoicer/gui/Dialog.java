@@ -12,10 +12,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public abstract class Dialog implements AbstractDialog {
 
@@ -31,6 +33,7 @@ public abstract class Dialog implements AbstractDialog {
     private Button nextButton;
     private Button cancelButton;
     private boolean naturalClosure;
+    private PageChange pageChange;
 
     public Dialog(String name, DialogSize dialogSize) {
         this.name = name;
@@ -145,6 +148,9 @@ public abstract class Dialog implements AbstractDialog {
 
     public void nextPage() {
         currentPage = getCurrentPageId() == getPageList().size() - 1 ? 0 : getCurrentPageId() + 1;
+        if (pageChange != null) {
+            pageChange.onPageChange(getDialogPage());
+        }
         update();
     }
 
@@ -182,6 +188,14 @@ public abstract class Dialog implements AbstractDialog {
         return naturalClosure;
     }
 
+    public void setPageChange(PageChange pageChange) {
+        this.pageChange = pageChange;
+    }
+
+    public Window getWindow() {
+        return stage;
+    }
+
     public enum DialogSize {
         SMALL(500, 300),
         MEDIUM(500, 400),
@@ -202,5 +216,9 @@ public abstract class Dialog implements AbstractDialog {
         public int getHeight() {
             return height;
         }
+    }
+
+    public interface PageChange {
+        void onPageChange(DialogPage newPage);
     }
 }

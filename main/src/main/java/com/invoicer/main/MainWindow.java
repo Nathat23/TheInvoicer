@@ -3,7 +3,6 @@ package com.invoicer.main;
 import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
 import com.invoicer.main.data.*;
-import com.invoicer.sql.AttributeGroup;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -187,7 +186,7 @@ public class MainWindow extends Application {
                         }
                     }
                     Customer customer = job.getCustomer();
-                    CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(customer, job, job.getJobItems());
+                    CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(theInvoicer, customer, job, job.getJobItems());
                     createInvoiceDialog.showDialog(true);
                 });
                 buttons.getChildren().add(createInvoice);
