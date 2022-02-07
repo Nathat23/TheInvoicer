@@ -114,7 +114,7 @@ public class CreateInvoiceDialog extends Dialog {
                 return;
             }
             System.out.println(Thread.currentThread().getName());
-            theInvoicer.getEmailHandler().sendEmail("nathat890@outlook.com", "Invoicer", html).thenAccept(e -> {
+            theInvoicer.getEmailHandler().sendEmail(customer.getEmail(), "Invoicer", html).thenAccept(e -> {
                 Platform.runLater(this::nextPage);
             });
         });

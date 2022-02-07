@@ -8,6 +8,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -128,6 +129,32 @@ public class MainWindow extends Application {
                     }
                 }
 
+                calendarAgenda.setSelectedOneAppointmentCallback(aaa -> null);
+
+                calendarAgenda.addEventHandler(MouseEvent.MOUSE_CLICKED, handler -> {
+                    if (handler.getClickCount() != 2) {
+                        return;
+                    }
+                    Agenda.Appointment appointment = calendarAgenda.selectedAppointments().get(0);
+                    Job job = (Job) jobManager.getStoredObjects().stream().filter(storedObject -> ((Job) storedObject).getStartDateTime().equals(calendarAgenda.selectedAppointments().get(0).getStartLocalDateTime())).findFirst().get();
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem editItem = new MenuItem("Edit Job");
+                    editItem.setOnAction(actionEvent -> {
+                        calendarAgenda.getEditAppointmentCallback().call(appointment);
+                    });
+                    MenuItem makeInvoice = new MenuItem("Create Invoice");
+                    makeInvoice.setOnAction(actionEvent -> {
+                        Customer customer = job.getCustomer();
+                        CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(theInvoicer, customer, job, job.getJobItems());
+                        createInvoiceDialog.showDialog(true);
+                    });
+                    contextMenu.getItems().addAll(editItem, makeInvoice);
+                    contextMenu.show(stage, handler.getScreenX(), handler.getScreenY());
+                });
+
+                calendarAgenda.setAllowDragging(false);
+                calendarAgenda.setAllowResize(false);
+
                 calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().withHour(earliestTime.getHour()).withMinute(earliestTime.getMinute()));
 
                 calendarAgenda.setNewAppointmentDrawnCallback(param -> {
@@ -150,14 +177,7 @@ public class MainWindow extends Application {
                 });
 
                 calendarAgenda.setEditAppointmentCallback(param -> {
-                    Job job= null;
-                    for (StoredObject object : jobManager.getStoredObjects()) {
-                        Job tJob = (Job) object;
-                        if (tJob.getName().equals(param.getSummary())) {
-                            job = (Job) object;
-                            break;
-                        }
-                    }
+                    Job job = (Job) jobManager.getStoredObjects().stream().filter(storedObject -> ((Job) storedObject).getStartDateTime().equals(calendarAgenda.selectedAppointments().get(0).getStartLocalDateTime())).findFirst().get();
                     EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, job);
                     editJobDialog.showDialog(true);
                     return null;
@@ -176,18 +196,7 @@ public class MainWindow extends Application {
                 buttons.getChildren().add(right);
                 Button createInvoice = new Button("Create");
                 createInvoice.setOnMouseClicked(a -> {
-                    Agenda.Appointment selected = calendarAgenda.selectedAppointments().get(0);
-                    Job job= null;
-                    for (StoredObject object : jobManager.getStoredObjects()) {
-                        Job tJob = (Job) object;
-                        if (tJob.getName().equals(selected.getSummary())) {
-                            job = (Job) object;
-                            break;
-                        }
-                    }
-                    Customer customer = job.getCustomer();
-                    CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(theInvoicer, customer, job, job.getJobItems());
-                    createInvoiceDialog.showDialog(true);
+
                 });
                 buttons.getChildren().add(createInvoice);
 
