@@ -50,7 +50,11 @@ public abstract class Manager implements IManager {
     @Override
     public int getNextId() {
         if (nextId == 0) {
-            nextId = hashSet.size();
+            for (StoredObject storedObject : getStoredObjects()) {
+                if (storedObject.getId() > nextId) {
+                    nextId = storedObject.getId() + 1;
+                }
+            }
             return nextId;
         }
         nextId += 1;
@@ -75,5 +79,10 @@ public abstract class Manager implements IManager {
 
     DataManager getDataManager() {
         return dataManager;
+    }
+
+    @Override
+    public void delete(StoredObject storedObject) {
+        hashSet.remove(storedObject.getId());
     }
 }

@@ -22,4 +22,6 @@ public interface IManager {
 
     int getNextId();
 
+    void delete(StoredObject storedObject);
+
 }

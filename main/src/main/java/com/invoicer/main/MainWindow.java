@@ -148,7 +148,18 @@ public class MainWindow extends Application {
                         CreateInvoiceDialog createInvoiceDialog = new CreateInvoiceDialog(theInvoicer, customer, job, job.getJobItems());
                         createInvoiceDialog.showDialog(true);
                     });
-                    contextMenu.getItems().addAll(editItem, makeInvoice);
+                    MenuItem delete = new MenuItem("Delete");
+                    delete.setOnAction(actionEvent -> {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Are you sure you want to delete?",ButtonType.CANCEL, ButtonType.YES);
+                        alert.show();
+                        alert.onCloseRequestProperty().setValue(dialogEvent -> {
+                            if (alert.getResult().getButtonData() == ButtonBar.ButtonData.YES) {
+                                theInvoicer.getStorageManager().delete(job);
+                                calendarAgenda.appointments().remove(appointment);
+                            }
+                        });
+                    });
+                    contextMenu.getItems().addAll(editItem, makeInvoice, delete);
                     contextMenu.show(stage, handler.getScreenX(), handler.getScreenY());
                 });
 

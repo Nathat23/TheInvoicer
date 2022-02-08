@@ -33,7 +33,8 @@ public class SqlTable {
                 structure.append(attributeConfig.getName()).append(" ").append(attributeConfig.getType().getStrType()).append(" NOT NULL,");
                 if (attributeConfig.getForeignKeyTable() != null) {
                     foreignKey.append("FOREIGN KEY (").append(attributeConfig.getName()).append(") ");
-                    foreignKey.append(" REFERENCES ").append(attributeConfig.getForeignKeyTable()).append("(").append(attributeConfig.getForeignKeyColumn()).append("),");
+                    foreignKey.append(" REFERENCES ").append(attributeConfig.getForeignKeyTable()).append("(").append(attributeConfig.getForeignKeyColumn()).append(") ");
+                    foreignKey.append("ON DELETE CASCADE,");
                 }
             }
             structure.append("PRIMARY KEY (id),");
