@@ -7,27 +7,19 @@ import com.invoicer.main.data.JobItem;
 import com.invoicer.sql.Attribute;
 import javafx.application.Platform;
 import javafx.print.PrinterJob;
-import javafx.scene.Node;
-import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
 
-import javax.mail.MessagingException;
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class CreateInvoiceDialog extends Dialog {
 
-    private Job job;
-    private Customer customer;
-    private List<JobItem> jobItemList;
+    private final Job job;
+    private final Customer customer;
+    private final List<JobItem> jobItemList;
     private String html;
-    private TheInvoicer theInvoicer;
-    private boolean sendEmail;
-    private boolean print;
+    private final TheInvoicer theInvoicer;
 
     public CreateInvoiceDialog(TheInvoicer theInvoicer, Customer customer, Job job, List<JobItem> jobItemList) {
         super("Invoice", DialogSize.LONG);
@@ -87,14 +79,8 @@ public class CreateInvoiceDialog extends Dialog {
         LabelElement labelElement = new LabelElement("Where should we send the invoice?");
         sendPage.addElement(labelElement);
         CheckBoxElement emailElement = new CheckBoxElement("E-mail");
-        emailElement.getContent().selectedProperty().addListener((observableValue, old, newVal) -> {
-            sendEmail = newVal;
-        });
         sendPage.addElement(emailElement);
         CheckBoxElement printElement = new CheckBoxElement("Print");
-        printElement.getContent().selectedProperty().addListener((observableValue, old, newVal) -> {
-            sendEmail = newVal;
-        });
         sendPage.addElement(printElement);
 
         DialogPage dialogPage = new DialogPage("Please wait");
@@ -113,7 +99,6 @@ public class CreateInvoiceDialog extends Dialog {
                 nextPage();
                 return;
             }
-            System.out.println(Thread.currentThread().getName());
             theInvoicer.getEmailHandler().sendEmail(customer.getEmail(), "Invoicer", html).thenAccept(e -> {
                 Platform.runLater(this::nextPage);
             });

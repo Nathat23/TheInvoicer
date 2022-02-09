@@ -68,7 +68,7 @@ public class MainWindow extends Application {
         Menu invMenu = new Menu("Invoicing");
         MenuItem modifyRates = new MenuItem("Rates");
         modifyRates.setOnAction(event -> {
-            ViewRateDialog viewRateDialog = new ViewRateDialog(theInvoicer.getDataManager());
+            ViewRateDialog viewRateDialog = new ViewRateDialog(theInvoicer.getStorageManager(), theInvoicer.getDataManager());
             viewRateDialog.showDialog();
         });
         invMenu.getItems().add(modifyRates);
@@ -224,7 +224,7 @@ public class MainWindow extends Application {
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                StoredObjectViewer table = new StoredObjectViewer(theInvoicer.getDataManager(), customerManager.getStoredObjects(), Customer.class);
+                StoredObjectViewer table = new StoredObjectViewer(theInvoicer.getStorageManager(), theInvoicer.getDataManager(), customerManager.getStoredObjects(), Customer.class);
                 addElement(table.getContent());
             }
         });

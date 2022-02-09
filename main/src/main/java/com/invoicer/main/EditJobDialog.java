@@ -22,7 +22,6 @@ import java.util.List;
 public class EditJobDialog extends Dialog {
 
     private Job job;
-    private Customer customer;
     private final Agenda.Appointment appointment;
     private final DataManager dataManager;
     private boolean newJob;

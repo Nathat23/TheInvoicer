@@ -17,7 +17,7 @@ import java.util.Optional;
 public class StoredObjectTable<T extends StoredObject> extends TableView<T> {
 
     private final Collection<T> storeableObjects;
-    private Manager manager;
+    private final Manager manager;
 
     public StoredObjectTable(Manager manager, Collection<T> storeableObjects, boolean showId) {
         this.storeableObjects = storeableObjects;
@@ -25,6 +25,7 @@ public class StoredObjectTable<T extends StoredObject> extends TableView<T> {
         init(showId);
     }
 
+    // create the object
     public void init(boolean showId) {
         Optional<T> optionalT = storeableObjects.stream().findFirst();
         if (optionalT.isEmpty()) {
@@ -36,6 +37,7 @@ public class StoredObjectTable<T extends StoredObject> extends TableView<T> {
         if (showId) {
             getColumns().add(id);
         }
+        // create columns for each attribute, create cell value factory
         for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
             TableColumn<T, String> column = new TableColumn<>(attribute.getAttributeConfig().getHuman() + ": ");
             column.setCellValueFactory(as -> {

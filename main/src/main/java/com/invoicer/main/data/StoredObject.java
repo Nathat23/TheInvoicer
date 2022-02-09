@@ -25,6 +25,7 @@ public class StoredObject {
         return attributeGroup;
     }
 
+    // check if attributes are modified
     public boolean isModified() {
         for (Attribute attribute : getAttributeGroup().getAttributes()) {
             if (attribute.isModified()) {

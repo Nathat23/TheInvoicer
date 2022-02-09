@@ -34,6 +34,7 @@ public class StoredObjectBoxElement<T extends StoredObject> extends ComboBoxElem
         return comboBox;
     }
 
+    // generate descriptive string for the StoredObject
     private String generateString(StoredObject object) {
         StringBuilder builder = new StringBuilder();
         builder.append("ID: ").append(object.getId()).append(" (");

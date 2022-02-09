@@ -18,6 +18,7 @@ import com.invoicer.sql.SqlHandler;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class TheInvoicer {
@@ -28,6 +29,7 @@ public class TheInvoicer {
 
     public void init() {
         dataManager = new DataManager();
+        // initialise managers
         InputStream inputStream = TheInvoicer.class.getResourceAsStream("/customer_structure.yml");
         dataManager.addManager(Customer.class, new CustomerManager(dataManager, new Config(inputStream)));
         InputStream inputStream2 = TheInvoicer.class.getResourceAsStream("/job_structure.yml");
@@ -36,16 +38,18 @@ public class TheInvoicer {
         dataManager.addManager(JobRate.class, new JobRateManager(dataManager, new Config(inputStream4)));
         InputStream inputStream3 = TheInvoicer.class.getResourceAsStream("/job_item_structure.yml");
         dataManager.addManager(JobItem.class, new JobItemManager(dataManager, new Config(inputStream3)));
-
+        // initialise sql handler
         SqlHandler sqlHandler = new SqlHandler("jdbc:mariadb://localhost:3306/invoicer", "new_user" , "new_password");
         sqlHandler.initialise();
         storageManager = new StorageManager(sqlHandler, dataManager);
         storageManager.init();
 
-        Yaml yaml = new Yaml(new Constructor(EmailConfig.class));
-        InputStream inputStream1 = TheInvoicer.class.getResourceAsStream("/email_config.yml");
-        emailHandler = new EmailHandler(yaml.load(inputStream1));
-        emailHandler.init();
+        emailHandler = new EmailHandler("email_config.yml");
+        try {
+            emailHandler.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

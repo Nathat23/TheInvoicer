@@ -3,6 +3,7 @@ package com.invoicer.main;
 import com.invoicer.gui.WideDialogElement;
 import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.Manager;
+import com.invoicer.main.data.StorageManager;
 import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.AttributeGroup;
 import javafx.scene.Node;
@@ -18,12 +19,14 @@ public class StoredObjectViewer extends WideDialogElement {
     private final Collection<StoredObject> collection;
     private final Class<? extends StoredObject> clazz;
     private final DataManager dataManager;
+    private final StorageManager storageManager;
 
-    public StoredObjectViewer(DataManager dataManager, Collection<StoredObject> collection, Class<? extends StoredObject> clazz) {
+    public StoredObjectViewer(StorageManager storageManager, DataManager dataManager, Collection<StoredObject> collection, Class<? extends StoredObject> clazz) {
         super("");
         this.collection = collection;
         this.dataManager = dataManager;
         this.clazz = clazz;
+        this.storageManager = storageManager;
     }
 
     @Override
@@ -59,6 +62,16 @@ public class StoredObjectViewer extends WideDialogElement {
             storedObjectTable.refresh();
         });
         buttonBar.getButtons().add(modify);
+        Button delete = new Button("Delete");
+        delete.setOnMouseClicked(event -> {
+            StoredObject selected = storedObjectTable.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                return;
+            }
+            storageManager.delete(selected);
+            storedObjectTable.getItems().remove(selected);
+        });
+        buttonBar.getButtons().add(delete);
         vBox.getChildren().addAll(buttonBar, storedObjectTable);
         return vBox;
     }

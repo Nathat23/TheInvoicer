@@ -55,6 +55,7 @@ public class Job extends StoredObject {
         getAttributeGroup().getAttributes().get(4).setValue(description);
     }
 
+    // get all job items for this job
     public List<JobItem> getJobItems() {
         List<JobItem> jobItems = new ArrayList<>();
         for (StoredObject storedObject : getDataManager().getManager(JobItem.class).getStoredObjects()) {
@@ -66,6 +67,7 @@ public class Job extends StoredObject {
         return jobItems;
     }
 
+    // get the customer for this job
     public Customer getCustomer() {
         for (StoredObject storedObject : getDataManager().getManager(Customer.class).getStoredObjects()) {
             if (storedObject.getId() == getCustomerId()) {
@@ -75,6 +77,7 @@ public class Job extends StoredObject {
         throw new UnsupportedOperationException("Couldn't find customer id " + getCustomerId());
     }
 
+    // calculate total cost for the job
     public double calculateTotalCost() {
         double cost = 0;
         for (JobItem jobItem : getJobItems()) {

@@ -11,7 +11,6 @@ public abstract class PageElement implements AbstractPageElement {
 
     private final VBox vBox;
     private String name;
-    private final List<Node> nodes;
 
     public PageElement(String name) {
         this();
@@ -20,7 +19,6 @@ public abstract class PageElement implements AbstractPageElement {
 
     public PageElement() {
         this.vBox = new VBox();
-        this.nodes = new ArrayList<>();
     }
 
     public String getName() {
@@ -33,7 +31,6 @@ public abstract class PageElement implements AbstractPageElement {
             label.setId("medium-text");
             vBox.getChildren().add(label);
         }
-        vBox.getChildren().addAll(nodes);
         generate();
     }
 

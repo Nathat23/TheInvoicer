@@ -21,46 +21,77 @@ public abstract class Manager implements IManager {
         this.dataManager = dataManager;
     }
 
+    /**
+     * Create new object and add to storage.
+     * @return object created
+     */
     @Override
     public StoredObject createAndStore() {
         StoredObject attributeGroup = createObject();
         addStoredObject(attributeGroup);
         return attributeGroup;
     }
+
+    /**
+     * Create new object
+     * @return new object
+     */
     @Override
     public StoredObject createObject() {
         return createObject(new AttributeGroup(getNextId(), getConfig()));
     }
 
+    /**
+     * Get all stored objects
+     * @return all stored objects
+     */
     @Override
     public Collection<StoredObject> getStoredObjects() {
         return hashSet.values();
     }
 
+    /**
+     * Get the stored object with the specified id
+     * @param id the id
+     * @return the stored object with the specified id
+     */
     @Override
     public StoredObject getStoredObject(int id) {
         return hashSet.get(id);
     }
 
+    /**
+     * Add stored object to map
+     * @param storedObject object to add to map
+     */
     @Override
     public void addStoredObject(StoredObject storedObject) {
         hashSet.put(storedObject.getId(), storedObject);
     }
 
+    /**
+     * Gets the value of next id
+     * @return the value of next id
+     */
     @Override
     public int getNextId() {
         if (nextId == 0) {
             for (StoredObject storedObject : getStoredObjects()) {
-                if (storedObject.getId() > nextId) {
+                if (storedObject.getId() >= nextId) {
                     nextId = storedObject.getId() + 1;
                 }
             }
+            System.out.println(nextId);
             return nextId;
         }
         nextId += 1;
         return nextId;
     }
 
+    /**
+     * Gets all the StoredObject that have been modified.
+     * @return all the StoredObject that have been modified.
+     */
     @Override
     public Collection<StoredObject> getModified() {
         Set<StoredObject> objects = new HashSet<>();
