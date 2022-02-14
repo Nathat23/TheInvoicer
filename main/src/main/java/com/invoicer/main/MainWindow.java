@@ -6,8 +6,14 @@ import com.invoicer.main.data.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -18,9 +24,7 @@ import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MainWindow extends Application {
 
@@ -80,10 +84,13 @@ public class MainWindow extends Application {
         TabPane tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
-        tabPane.setTabMinHeight(30);
-        tabPane.setTabMinWidth(50);
+        tabPane.setSide(Side.LEFT);
+        tabPane.setTabMinHeight(75);
+        tabPane.setTabMinWidth(75);
+        tabPane.setTabMaxWidth(75);
+        tabPane.setTabMaxHeight(75);
 
-        Page overview = new GridPage("Overview", 2);
+        Page overview = new GridPage("Overview", "house.png", 2);
         overview.addPageElement(new PageElement("Nice") {
             @Override
             public void generate() {
@@ -106,7 +113,7 @@ public class MainWindow extends Application {
         JobManager jobManager = (JobManager) theInvoicer.getDataManager().getManager(Job.class);
         CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
 
-        Page timetable = new ListPage("Timetable");
+        Page timetable = new ListPage("Timetable", "calendar.png");
         timetable.addPageElement(new PageElement() {
             @Override
             public void generate() {
@@ -123,6 +130,7 @@ public class MainWindow extends Application {
                     appointment.setStartLocalDateTime(job.getStartDateTime());
                     appointment.setEndLocalDateTime(job.getEndDateTime());
                     appointment.setSummary(job.getName());
+                    appointment.setAppointmentGroup(calendarAgenda.appointmentGroups().get(job.getCustomerId() % calendarAgenda.appointmentGroups().size()));
                     calendarAgenda.appointments().add(appointment);
                     if (job.getStartDateTime().toLocalTime().isBefore(earliestTime)) {
                         earliestTime = job.getStartDateTime().toLocalTime();
@@ -184,6 +192,7 @@ public class MainWindow extends Application {
                     //Optional<ButtonBar.ButtonData> result = newAppointmentDialog.showAndWait();
                     EditJobDialog editJobDialog = new EditJobDialog(theInvoicer.getDataManager(), param, null);
                     editJobDialog.showDialog(true);
+                    param.setAppointmentGroup(calendarAgenda.appointmentGroups().get(editJobDialog.getJob().getCustomerId() % calendarAgenda.appointmentGroups().size()));
                     return editJobDialog.isNaturalClosure() ? ButtonBar.ButtonData.OK_DONE : ButtonBar.ButtonData.CANCEL_CLOSE;
                 });
 
@@ -205,11 +214,6 @@ public class MainWindow extends Application {
                     calendarAgenda.setDisplayedLocalDateTime(calendarAgenda.getDisplayedLocalDateTime().plusWeeks(1));
                 });
                 buttons.getChildren().add(right);
-                Button createInvoice = new Button("Create");
-                createInvoice.setOnMouseClicked(a -> {
-
-                });
-                buttons.getChildren().add(createInvoice);
 
                 addElement(buttons);
                 addElement(calendarAgenda);
@@ -220,7 +224,7 @@ public class MainWindow extends Application {
 
         pages.add(timetable);
 
-        Page customers = new ListPage("Customers");
+        Page customers = new ListPage("Customers", "people.png");
         customers.addPageElement(new PageElement() {
             @Override
             public void generate() {
@@ -231,8 +235,17 @@ public class MainWindow extends Application {
         pages.add(customers);
 
         for (Page page : pages) {
-            Tab tab = new Tab(page.getName());
+            Tab tab = new Tab();
             tab.setContent(page.generatePage());
+            VBox vBox = new VBox();
+            Label nameLabel = new Label(page.getName());
+            nameLabel.setPrefWidth(60);
+            ImageView imageView = new ImageView(new Image(TheInvoicer.class.getResourceAsStream("/" + page.getIconPath())));
+            imageView.setFitHeight(50);
+            imageView.setFitWidth(50);
+            vBox.setPadding(new Insets(5));
+            vBox.getChildren().addAll(imageView, nameLabel);
+            tab.setGraphic(vBox);
             tabPane.getTabs().add(tab);
         }
 

@@ -8,8 +8,8 @@ public class GridPage extends Page {
 
     private final int columns;
 
-    public GridPage(String name, int columns) {
-        super(name);
+    public GridPage(String name, String iconPath,  int columns) {
+        super(name, iconPath);
         this.columns = columns;
     }
 

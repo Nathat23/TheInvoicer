@@ -5,8 +5,8 @@ import javafx.scene.layout.VBox;
 
 public class ListPage extends Page {
 
-    public ListPage(String name) {
-        super(name);
+    public ListPage(String name, String iconPath) {
+        super(name, iconPath);
     }
 
     @Override

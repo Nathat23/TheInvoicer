@@ -12,10 +12,12 @@ public abstract class Page {
 
     private final List<PageElement> pageElementList;
     private final String name;
+    private final String iconPath;
 
-    public Page(String name) {
+    public Page(String name, String iconPath) {
         this.pageElementList = new ArrayList<>();
         this.name = name;
+        this.iconPath = iconPath;
     }
 
     public String getName() {
@@ -41,4 +43,7 @@ public abstract class Page {
         return vBox;
     }
 
+    public String getIconPath() {
+        return iconPath;
+    }
 }

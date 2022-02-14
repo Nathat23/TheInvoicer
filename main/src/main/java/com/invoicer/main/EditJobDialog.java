@@ -50,27 +50,26 @@ public class EditJobDialog extends Dialog {
         for (StoredObject customer : customerManager.getStoredObjects()) {
             comboBoxElement.getContent().getItems().add((Customer) customer);
         }
-        comboBoxElement.getContent().getSelectionModel().selectedItemProperty().addListener((observableValue, customer1, t1) -> {
-            job.setCustomerId(t1.getId());
-        });
         dialogPage.addElement(comboBoxElement);
         StringTextFieldElement nameElement = new StringTextFieldElement("Name");
-        nameElement.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
-            appointment.setSummary(newValue);
-            job.setName(newValue);
-        });
         dialogPage.addElement(nameElement);
         StringTextFieldElement description = new StringTextFieldElement("Description");
-        description.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
-            appointment.setDescription(newValue);
-            job.setDescription(newValue);
-        });
         dialogPage.addElement(description);
         if (!newJob) {
             comboBoxElement.getContent().getSelectionModel().select((Customer) customerManager.getStoredObject(job.getCustomerId()));
             nameElement.getContent().setText(job.getName());
             description.getContent().setText(job.getDescription());
         }
+        comboBoxElement.getContent().getSelectionModel().selectedItemProperty().addListener((observableValue, customer1, t1) -> {
+            job.setCustomerId(t1.getId());
+        });
+        nameElement.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
+            appointment.setSummary(newValue);
+            job.setName(newValue);
+        });
+        description.getContent().textProperty().addListener((observable, oldValue, newValue) -> {
+            job.setDescription(newValue);
+        });
         WideDialogElement wideDialogElement = new WideDialogElement("Item"){
             VBox vBox;
 
@@ -157,5 +156,9 @@ public class EditJobDialog extends Dialog {
         for (JobItem jItem : jobItem) {
             jobItemManager.addStoredObject(jItem);
         }
+    }
+
+    public Job getJob() {
+        return job;
     }
 }
