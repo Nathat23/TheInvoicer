@@ -16,7 +16,6 @@ public class GridPage extends Page {
     @Override
     public Node generate() {
         GridPane gridPane = new GridPane();
-        gridPane.setGridLinesVisible(true);
         int size = getPageElementList().size();
         int actualColumns = Math.min(size, getPreferredColumns());
         for (int i = 0; i < size; i++) {

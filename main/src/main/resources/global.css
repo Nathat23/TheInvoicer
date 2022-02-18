@@ -9,3 +9,40 @@
 #minor-text{
     -fx-font-size: 12pt;
 }
+
+#clock-face {
+    -fx-fill: radial-gradient(radius 180%, #8FBC8F, derive(#8FBC8F, -30%), derive(#8FBC8F, 30%));
+    -fx-stroke: derive(#8FBC8F, -45%);
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(three-pass-box, grey, 10, 0, 4, 4);
+}
+
+#clock-hr-hand {
+    -fx-stroke: derive(#8FBC8F, -80%);
+    -fx-stroke-width: 5;
+    -fx-stroke-line-cap: round;
+}
+
+#clock-min-hand {
+    -fx-stroke: derive(#8FBC8F, -40%);
+    -fx-stroke-width: 4;
+    -fx-stroke-line-cap: round;
+}
+
+#clock-hand {
+    -fx-stroke: derive(#8FBC8F, -50%);
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+}
+
+.tick {
+  -fx-stroke: derive(#556B2F, -15%);
+  -fx-stroke-width: 3;
+  -fx-stroke-line-cap: round;
+}
+
+.mini-tick {
+  -fx-stroke: derive(#556B2F, -25%);
+  -fx-stroke-width: 1;
+  -fx-stroke-line-cap: round;
+}

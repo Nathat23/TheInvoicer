@@ -3,19 +3,23 @@ package com.invoicer.main;
 import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
 import com.invoicer.main.data.*;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import jfxtras.icalendarfx.VCalendar;
@@ -23,8 +27,13 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainWindow extends Application {
 
@@ -91,24 +100,78 @@ public class MainWindow extends Application {
         tabPane.setTabMaxHeight(75);
 
         Page overview = new GridPage("Overview", "house.png", 2);
-        overview.addPageElement(new PageElement("Nice") {
+        overview.addPageElement(new PageElement("Welcome") {
             @Override
             public void generate() {
-                addElement(new Label("Haha"));
+                addElement(new Label("Click a tab on the left to get started."));
             }
         });
-        overview.addPageElement(new PageElement("But") {
+        overview.addPageElement(new PageElement() {
             @Override
             public void generate() {
-                addElement(new Label("Oh"));
+                Circle circle = new Circle(100);
+                circle.setId("clock-face");
+                Group ticks = new Group();
+                for (int i = 0; i < 12; i++) {
+                    Line tick = new Line(circle.getCenterX(), circle.getCenterY() - circle.getRadius() *0.9, circle.getCenterX(), circle.getCenterY() - circle.getRadius() * 0.95);
+                    tick.getStyleClass().add("tick");
+                    tick.getTransforms().add(new Rotate(i * (360 / 12)));
+                    Group miniTicks = new Group();
+                    for (int i1 = 1; i1 < 5; i1++) {
+                        Line miniTick = new Line(circle.getCenterX(), circle.getCenterY() - circle.getRadius() *0.92, circle.getCenterX(), circle.getCenterY() - circle.getRadius() * 0.95);
+                        miniTick.getStyleClass().add("mini-tick");
+                        miniTicks.getChildren().add(miniTick);
+                        miniTick.getTransforms().add(new Rotate(i * (360 / 12) + i1 * (360 / 60)));
+                    }
+                    ticks.getChildren().addAll(tick, miniTicks);
+                }
+                Line hLine = new Line(circle.getCenterX(), circle.getCenterY(), circle.getCenterX(), circle.getCenterY() - circle.getRadius() * 0.55);
+                Line mLine = new Line(circle.getCenterX(), circle.getCenterY(), circle.getCenterX(), circle.getCenterY() - circle.getRadius() * 0.85);
+                Line sLine = new Line(circle.getCenterX(), circle.getCenterY(), circle.getCenterX(), circle.getCenterY() - circle.getRadius() * 0.70);
+                hLine.setId("clock-hr-hand");
+                mLine.setId("clock-min-hand");
+                sLine.setId("clock-hand");
+                LocalTime localTime = LocalTime.now();
+                double secondsDeg = localTime.get(ChronoField.SECOND_OF_MINUTE) * (360D / 60D);
+                double minutesDeg = (localTime.get(ChronoField.MINUTE_OF_HOUR) + (secondsDeg / 360)) * (360D / 60D);
+                double hoursDeg = (localTime.get(ChronoField.CLOCK_HOUR_OF_AMPM) + (minutesDeg / 360)) * (360D / 12D);
+                Rotate sRotate = new Rotate(secondsDeg);
+                sLine.getTransforms().add(sRotate);
+                Rotate mRotate = new Rotate(minutesDeg);
+                mLine.getTransforms().add(mRotate);
+                Rotate hRotate = new Rotate(hoursDeg);
+                hLine.getTransforms().add(hRotate);
+                Timeline hourTimeLine = new Timeline(new KeyFrame(Duration.hours(12),
+                        new KeyValue(hRotate.angleProperty(), 360 + hoursDeg, Interpolator.LINEAR)));
+                Timeline minTimeLine = new Timeline(new KeyFrame(Duration.minutes(60),
+                        new KeyValue(mRotate.angleProperty(), 360 + minutesDeg, Interpolator.LINEAR)));
+                Timeline secsTimeLine = new Timeline(new KeyFrame(Duration.seconds(60),
+                        new KeyValue(sRotate.angleProperty(), 360 + secondsDeg, Interpolator.LINEAR)));
+                hourTimeLine.setCycleCount(Animation.INDEFINITE);
+                minTimeLine.setCycleCount(Animation.INDEFINITE);
+                secsTimeLine.setCycleCount(Animation.INDEFINITE);
+                hourTimeLine.play();
+                minTimeLine.play();
+                secsTimeLine.play();
+
+                Group group = new Group(circle, ticks,  hLine, sLine, mLine);
+                VBox vBox = new VBox();
+                vBox.setAlignment(Pos.CENTER);
+                LocalDate date = LocalDate.now();
+                StringBuilder dateString = new StringBuilder();
+                dateString.append(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+                dateString.append(" ").append(date.getDayOfMonth()).append(" ");
+                dateString.append(date.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+                dateString.append(" ").append(date.getYear());
+                Label dateLabel = new Label(dateString.toString());
+                vBox.getChildren().addAll(dateLabel, group);
+                HBox hBox = new HBox();
+                hBox.setAlignment(Pos.BASELINE_RIGHT);
+                hBox.getChildren().add(vBox);
+                addElement(hBox);
             }
         });
-        overview.addPageElement(new PageElement("Da") {
-            @Override
-            public void generate() {
-                addElement(new Label("Sure"));
-            }
-        });
+
 
         JobManager jobManager = (JobManager) theInvoicer.getDataManager().getManager(Job.class);
         CustomerManager customerManager = (CustomerManager) theInvoicer.getDataManager().getManager(Customer.class);
