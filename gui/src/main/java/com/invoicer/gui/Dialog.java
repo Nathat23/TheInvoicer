@@ -83,7 +83,8 @@ public abstract class Dialog implements AbstractDialog {
         updateStatus();
         borderPane.leftProperty().setValue(progressBox);
         // Bottom bar
-        ButtonBar hBox = new ButtonBar();
+        HBox hBox = new HBox();
+        ButtonBar buttonBar = new ButtonBar();
         hBox.setId("button-box");
         Label label = new Label();
         label.setId("error-text");
@@ -92,7 +93,7 @@ public abstract class Dialog implements AbstractDialog {
             stage.close();
         });
         ButtonBar.setButtonData(cancelButton, ButtonBar.ButtonData.CANCEL_CLOSE);
-        hBox.getButtons().add(cancelButton);
+        buttonBar.getButtons().add(cancelButton);
         nextButton = new Button("Next");
         nextButton.setOnAction(actionEvent -> {
             if (getDialogPage().getValidation() != null) {
@@ -117,7 +118,8 @@ public abstract class Dialog implements AbstractDialog {
         for (DialogPage dialogPage : pageList) {
             dialogPage.getContents().setOnMouseMoved(event -> nextButton.setDisable(!dialogPage.validateContents()));
         }
-        hBox.getButtons().addAll(label, nextButton);
+        buttonBar.getButtons().add(nextButton);
+        hBox.getChildren().addAll(label, buttonBar);
         borderPane.bottomProperty().setValue(hBox);
 
         scene = new Scene(borderPane, dialogSize.getWidth(), dialogSize.getHeight());

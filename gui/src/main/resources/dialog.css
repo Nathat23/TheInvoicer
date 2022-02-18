@@ -35,4 +35,6 @@
 
 #error-text {
     -fx-text-fill: red;
+    -fx-alignment: center;
+    -fx-min-width: 50;
 }

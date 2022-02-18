@@ -6,6 +6,12 @@ import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.Attribute;
 import com.invoicer.sql.BooleanAttribute;
 import com.invoicer.sql.AttributeGroup;
+import com.invoicer.sql.DataValidation;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GenericModifyDialog extends Dialog {
 
@@ -27,6 +33,7 @@ public class GenericModifyDialog extends Dialog {
             newObject = true;
         }
         dialogPage = new DialogPage("Modify");
+        Map<Attribute,DialogElement> dataValidationList = new LinkedHashMap<>();
         for (Attribute attribute : object.getAttributeGroup().getAttributes()) {
             EditableElement dialogElement;
             switch (attribute.getAttributeConfig().getType()) {
@@ -52,7 +59,24 @@ public class GenericModifyDialog extends Dialog {
                 ((CheckBoxElement) dialogElement).getContent().setSelected(((BooleanAttribute) attribute).getValue());
             }
             dialogPage.addElement((DialogElement) dialogElement);
+            if (attribute.getAttributeConfig().getDataValidation() != null) {
+                dataValidationList.put(attribute, (DialogElement) dialogElement);
+            }
         }
+        dialogPage.setValidation(new CustomValidation() {
+            @Override
+            public ValidationResult validatePage() {
+                for (Attribute attribute : dataValidationList.keySet()) {
+                    DataValidation dataValidation = attribute.getAttributeConfig().getDataValidation();
+                    DialogElement editableElement = dataValidationList.get(attribute);
+                    EditableElement element = (EditableElement) editableElement;
+                    if (!dataValidation.getValidation().validate(element.getValue().toString())) {
+                        return new ValidationResult(false, "Invalid " + editableElement.getName());
+                    }
+                }
+                return new ValidationResult(true, "");
+            }
+        });
         addPage(dialogPage);
     }
 
