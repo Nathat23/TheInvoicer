@@ -1,12 +1,9 @@
 package com.invoicer.main;
 
-import com.invoicer.gui.*;
 import com.invoicer.gui.Dialog;
 import com.invoicer.main.data.*;
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -27,13 +24,12 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class MainWindow extends Application {
 
@@ -46,36 +42,18 @@ public class MainWindow extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         theInvoicer = new TheInvoicer();
         theInvoicer.init();
-        Dialog password = new Dialog("Login", Dialog.DialogSize.SMALL) {
-            @Override
-            public void populate() {
-                DialogPage dialogPage = new DialogPage("Login");
-                StringTextFieldElement username = new StringTextFieldElement("Username");
-                StringTextFieldElement password = new PasswordTextFieldElement("Password");
-                dialogPage.addElement(username);
-                dialogPage.addElement(password);
-                dialogPage.setValidation(new CustomValidation() {
-                    @Override
-                    public ValidationResult validatePage() {
-                       if (username.getContent().getText().equals("Beans") && password.getContent().getText().equals("Had")) {
-                           return new AbstractCustomValidation.ValidationResult(true, "");
-                       }
-                       return new AbstractCustomValidation.ValidationResult(false, "Incorrect password!");
-                    }
-                });
-                addPage(dialogPage);
-            }
-        };
+        LoginHandler loginHandler = new LoginHandler();
+        loginHandler.init();
+        Dialog password = new StartDialog(loginHandler);
         if (!skipLogin) {
             password.showDialog(true);
             if (!password.getDialogPage().isCustomValidated()) {
                 return;
             }
         }
-
         BorderPane borderPane = new BorderPane();
         MenuBar menuBar = new MenuBar();
         Menu invMenu = new Menu("Invoicing");
