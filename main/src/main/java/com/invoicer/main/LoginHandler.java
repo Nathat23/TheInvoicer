@@ -23,9 +23,9 @@ public class LoginHandler {
 
     public void init() throws IOException {
         File file = new File("login.yml");
-        yaml = new Yaml(new Constructor(LoginConfig.class));
-        loginConfig = yaml.load(file.toURL().openStream());
         newUser = file.createNewFile() || loginConfig == null;
+        yaml = new Yaml(new Constructor(LoginConfig.class));
+        loginConfig = newUser ? new LoginConfig() : yaml.load(file.toURL().openStream());
         saveFile();
     }
 

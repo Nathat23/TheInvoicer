@@ -59,8 +59,8 @@ public class StartDialog extends Dialog {
         if (!getDialogPage().getPageTitle().equals("New User")) {
             return;
         }
-        StringTextFieldElement username = (StringTextFieldElement) getDialogPage().getElementList().get(0);
-        StringTextFieldElement password = (StringTextFieldElement) getDialogPage().getElementList().get(1);
+        StringTextFieldElement username = (StringTextFieldElement) getDialogPage().getElementList().get(1);
+        StringTextFieldElement password = (StringTextFieldElement) getDialogPage().getElementList().get(2);
         try {
             getLoginHandler().hashAndStore(username.getValue(), password.getValue());
         } catch (IOException e) {
