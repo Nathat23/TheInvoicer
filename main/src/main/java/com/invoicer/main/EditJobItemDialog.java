@@ -5,6 +5,7 @@ import com.invoicer.gui.DialogPage;
 import com.invoicer.gui.IntegerTextFieldElement;
 import com.invoicer.gui.StringTextFieldElement;
 import com.invoicer.main.data.*;
+import com.invoicer.main.display.StoredObjectBoxElement;
 
 public class EditJobItemDialog extends Dialog {
 

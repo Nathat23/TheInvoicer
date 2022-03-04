@@ -1,11 +1,12 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
 import com.invoicer.gui.WideDialogElement;
+import com.invoicer.main.GenericModifyDialog;
 import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.Manager;
 import com.invoicer.main.data.StorageManager;
 import com.invoicer.main.data.StoredObject;
-import com.invoicer.sql.AttributeGroup;
+import com.invoicer.main.display.StoredObjectTable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;

@@ -1,5 +1,6 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
+import com.invoicer.main.GenericModifyDialog;
 import com.invoicer.main.data.Manager;
 import com.invoicer.main.data.StoredObject;
 import com.invoicer.sql.Attribute;

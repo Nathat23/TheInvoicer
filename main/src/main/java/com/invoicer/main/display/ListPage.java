@@ -1,4 +1,4 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;

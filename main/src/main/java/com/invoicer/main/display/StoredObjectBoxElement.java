@@ -1,4 +1,4 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
 import com.invoicer.gui.ComboBoxElement;
 import com.invoicer.main.data.StoredObject;

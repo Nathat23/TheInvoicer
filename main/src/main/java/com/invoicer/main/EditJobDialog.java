@@ -5,6 +5,7 @@ import com.invoicer.gui.DialogPage;
 import com.invoicer.gui.StringTextFieldElement;
 import com.invoicer.gui.WideDialogElement;
 import com.invoicer.main.data.*;
+import com.invoicer.main.display.StoredObjectBoxElement;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;

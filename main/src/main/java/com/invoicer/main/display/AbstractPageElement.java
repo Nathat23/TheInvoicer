@@ -1,4 +1,4 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
 public interface AbstractPageElement {
 

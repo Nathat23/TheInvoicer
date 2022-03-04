@@ -12,7 +12,7 @@
         <module>sql</module>
         <module>main</module>
         <module>gui</module>
-        <module>api</module>
+        <module>document</module>
     </modules>
 
     <properties>

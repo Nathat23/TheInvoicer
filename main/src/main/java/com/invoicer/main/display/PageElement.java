@@ -1,11 +1,8 @@
-package com.invoicer.main;
+package com.invoicer.main.display;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class PageElement implements AbstractPageElement {
 

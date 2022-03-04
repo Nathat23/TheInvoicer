@@ -81,7 +81,6 @@ public abstract class Manager implements IManager {
                     nextId = storedObject.getId() + 1;
                 }
             }
-            System.out.println(nextId);
             return nextId;
         }
         nextId += 1;

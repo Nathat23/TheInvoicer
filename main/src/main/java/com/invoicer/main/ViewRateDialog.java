@@ -7,6 +7,7 @@ import com.invoicer.main.data.DataManager;
 import com.invoicer.main.data.JobRate;
 import com.invoicer.main.data.JobRateManager;
 import com.invoicer.main.data.StorageManager;
+import com.invoicer.main.display.StoredObjectViewer;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 

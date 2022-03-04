@@ -9,6 +9,7 @@
         <module name="main" />
         <module name="gui" />
         <module name="sql" />
+        <module name="document" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

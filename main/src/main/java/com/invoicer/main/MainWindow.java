@@ -2,6 +2,7 @@ package com.invoicer.main;
 
 import com.invoicer.gui.Dialog;
 import com.invoicer.main.data.*;
+import com.invoicer.main.display.*;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
