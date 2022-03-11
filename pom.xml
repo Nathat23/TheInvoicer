@@ -12,7 +12,6 @@
         <module>sql</module>
         <module>main</module>
         <module>gui</module>
-        <module>document</module>
     </modules>
 
     <properties>

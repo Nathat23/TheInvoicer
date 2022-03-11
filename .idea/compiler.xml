@@ -9,11 +9,11 @@
         <module name="main" />
         <module name="gui" />
         <module name="sql" />
-        <module name="document" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api" target="11" />
+      <module name="document" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
