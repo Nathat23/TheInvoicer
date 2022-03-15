@@ -31,6 +31,7 @@ public class CreateInvoiceDialog extends Dialog {
 
     @Override
     public void populate() {
+        html = generateHTML();
         DialogPage previewPage = new DialogPage("Preview");
         WideDialogElement webPage = new WideDialogElement("") {
             WebView htmlEditor;
@@ -45,29 +46,6 @@ public class CreateInvoiceDialog extends Dialog {
             @Override
             public WebView createElement() {
                 WebView editor = new WebView();
-                InputStream inputStream = MainWindow.class.getResourceAsStream("/index.html");
-                Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
-                html = scanner.hasNext() ? scanner.next() : "";
-                StringBuilder addressBuilder = new StringBuilder("<table>");
-                for (Attribute attribute : customer.getAttributeGroup().getAttributes()) {
-                    addressBuilder.append("<tr>");
-                    addressBuilder.append("<td>").append(attribute.getValue().toString()).append("</td>");
-                    addressBuilder.append("</tr>");
-                }
-                addressBuilder.append("</table>");
-                html = html.replace("$address", addressBuilder);
-                StringBuilder jobItemBuilder = new StringBuilder();
-                for (JobItem item : jobItemList) {
-                    jobItemBuilder.append("<tr>");
-                    String itemNameString = item.getName() + "<br><i>" + item.getJobRate().getName() + "</i>";
-                    jobItemBuilder.append("<td>").append(itemNameString).append("</td>");
-                    String unitsString = item.getJobRate().isHourly() ? "hourly" : item.getUnits() + "";
-                    jobItemBuilder.append("<td>").append(unitsString).append("</td>");
-                    jobItemBuilder.append("<td>").append(item.calculateCost()).append("</td>");
-                    jobItemBuilder.append("</tr>");
-                }
-                html = html.replace("$items", jobItemBuilder);
-                html = html.replace("$cost", job.calculateTotalCost() + "");
                 editor.getEngine().loadContent(html);
                 editor.setVisible(true);
                 return editor;
@@ -115,5 +93,32 @@ public class CreateInvoiceDialog extends Dialog {
     @Override
     public void onClosure() {
 
+    }
+
+    public String generateHTML() {
+        InputStream inputStream = MainWindow.class.getResourceAsStream("/index.html");
+        Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
+        String html = scanner.hasNext() ? scanner.next() : "";
+        StringBuilder addressBuilder = new StringBuilder("<table>");
+        for (Attribute attribute : customer.getAttributeGroup().getAttributes()) {
+            addressBuilder.append("<tr>");
+            addressBuilder.append("<td>").append(attribute.getValue().toString()).append("</td>");
+            addressBuilder.append("</tr>");
+        }
+        addressBuilder.append("</table>");
+        html = html.replace("$address", addressBuilder);
+        StringBuilder jobItemBuilder = new StringBuilder();
+        for (JobItem item : jobItemList) {
+            jobItemBuilder.append("<tr>");
+            String itemNameString = item.getName() + "<br><i>" + item.getJobRate().getName() + "</i>";
+            jobItemBuilder.append("<td>").append(itemNameString).append("</td>");
+            String unitsString = item.getJobRate().isHourly() ? "hourly" : item.getUnits() + "";
+            jobItemBuilder.append("<td>").append(unitsString).append("</td>");
+            jobItemBuilder.append("<td>").append(item.calculateCost()).append("</td>");
+            jobItemBuilder.append("</tr>");
+        }
+        html = html.replace("$items", jobItemBuilder);
+        html = html.replace("$cost", job.calculateTotalCost() + "");
+        return html;
     }
 }
